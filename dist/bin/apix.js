@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import {
   createCli
-} from "../chunk-WV5ES7HF.js";
+} from "../chunk-OXE7HHNC.js";
 
 // src/bin/apix.ts
 var cli = createCli();

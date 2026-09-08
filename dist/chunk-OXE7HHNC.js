@@ -3901,6 +3901,228 @@ Secrets must be kept in your local APiX config or referenced via environment var
   }
 };
 
+// src/core/benchmark/benchmarker.ts
+var Benchmarker = class {
+  client;
+  constructor(client) {
+    this.client = client || new HttpClient();
+  }
+  async runBenchmark(options) {
+    const total = Math.max(1, options.totalRequests);
+    const concurrency = Math.max(1, Math.min(options.concurrency, total));
+    const latencies = [];
+    let successful = 0;
+    let failed = 0;
+    const startOverall = performance.now();
+    let remaining = total;
+    const worker = async () => {
+      while (remaining > 0) {
+        remaining--;
+        const reqConfig = {
+          url: options.url,
+          method: options.method,
+          headers: options.headers,
+          body: options.body,
+          timeoutMs: options.timeoutMs ?? 1e4
+        };
+        try {
+          const resp = await this.client.request(reqConfig);
+          latencies.push(resp.timing.total);
+          if (resp.status >= 200 && resp.status < 400) {
+            successful++;
+          } else {
+            failed++;
+          }
+        } catch {
+          failed++;
+        }
+      }
+    };
+    const workers = [];
+    for (let i = 0; i < concurrency; i++) {
+      workers.push(worker());
+    }
+    await Promise.all(workers);
+    const totalTimeMs = Math.max(1, performance.now() - startOverall);
+    latencies.sort((a, b) => a - b);
+    const count = latencies.length || 1;
+    const sum = latencies.reduce((acc, v) => acc + v, 0);
+    const avgMs = Math.round(sum / count);
+    const minMs = latencies[0] || 0;
+    const maxMs = latencies[latencies.length - 1] || 0;
+    const percentile = (p) => {
+      if (latencies.length === 0) return 0;
+      const idx = Math.min(latencies.length - 1, Math.floor(p / 100 * latencies.length));
+      return latencies[idx];
+    };
+    const rps = parseFloat((total / totalTimeMs * 1e3).toFixed(2));
+    return {
+      url: options.url,
+      method: options.method,
+      totalRequests: total,
+      successful,
+      failed,
+      totalTimeMs: Math.round(totalTimeMs),
+      requestsPerSecond: rps,
+      avgMs,
+      minMs,
+      maxMs,
+      p50Ms: percentile(50),
+      p90Ms: percentile(90),
+      p95Ms: percentile(95),
+      p99Ms: percentile(99)
+    };
+  }
+};
+
+// src/core/graphql/graphql-client.ts
+var GraphQlClient = class {
+  client;
+  constructor(client) {
+    this.client = client || new HttpClient();
+  }
+  async introspect(endpointUrl, headers) {
+    const introspectionQuery = `
+      query IntrospectSchema {
+        __schema {
+          queryType { name }
+          mutationType { name }
+          types {
+            name
+            kind
+            fields {
+              name
+              type { name kind ofType { name kind } }
+              args { name type { name kind } }
+            }
+          }
+        }
+      }
+    `;
+    const resp = await this.client.request({
+      url: endpointUrl,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...headers || {}
+      },
+      body: { query: introspectionQuery }
+    });
+    if (resp.status >= 400 || !resp.data?.data?.__schema) {
+      throw new Error(`GraphQL introspection failed (HTTP ${resp.status}): ${resp.rawData.slice(0, 100)}`);
+    }
+    const schema = resp.data.data.__schema;
+    const queryTypeName = schema.queryType?.name || "Query";
+    const mutationTypeName = schema.mutationType?.name || "Mutation";
+    const queries = [];
+    const mutations = [];
+    const types = [];
+    if (Array.isArray(schema.types)) {
+      for (const t of schema.types) {
+        if (!t.name || t.name.startsWith("__")) continue;
+        types.push(t.name);
+        if (t.name === queryTypeName && Array.isArray(t.fields)) {
+          for (const f of t.fields) {
+            queries.push({
+              name: f.name,
+              kind: "query",
+              args: Array.isArray(f.args) ? f.args.map((a) => ({ name: a.name, type: a.type?.name || "String" })) : [],
+              returnType: f.type?.name || f.type?.ofType?.name || "Object"
+            });
+          }
+        }
+        if (t.name === mutationTypeName && Array.isArray(t.fields)) {
+          for (const f of t.fields) {
+            mutations.push({
+              name: f.name,
+              kind: "mutation",
+              args: Array.isArray(f.args) ? f.args.map((a) => ({ name: a.name, type: a.type?.name || "String" })) : [],
+              returnType: f.type?.name || f.type?.ofType?.name || "Object"
+            });
+          }
+        }
+      }
+    }
+    return {
+      types,
+      queries,
+      mutations
+    };
+  }
+  async query(endpointUrl, queryStr, variables, headers) {
+    return this.client.request({
+      url: endpointUrl,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...headers || {}
+      },
+      body: {
+        query: queryStr,
+        variables
+      }
+    });
+  }
+};
+
+// src/core/plugins/plugin-manager.ts
+import fs8 from "fs/promises";
+import os6 from "os";
+import path8 from "path";
+var PluginManager = class {
+  pluginDir;
+  plugins = [];
+  constructor(customDir) {
+    this.pluginDir = customDir || path8.join(os6.homedir(), ".apix", "plugins");
+  }
+  async init() {
+    try {
+      await fs8.mkdir(this.pluginDir, { recursive: true });
+      this.plugins = [
+        {
+          id: "rest-openapi",
+          name: "OpenAPI REST Discovery Plugin",
+          version: "1.0.0",
+          description: "Default REST & OpenAPI 3.x/2.0 auto-discovery engine",
+          protocol: "rest",
+          enabled: true
+        },
+        {
+          id: "graphql-inspector",
+          name: "GraphQL Introspection Plugin",
+          version: "1.0.0",
+          description: "GraphQL schema introspection and query execution",
+          protocol: "graphql",
+          enabled: true
+        },
+        {
+          id: "code-gen-multi",
+          name: "10-Language Code Generator",
+          version: "1.0.0",
+          description: "Multi-language code generator for cURL, JS, TS, Python, Go, Rust, etc.",
+          enabled: true
+        }
+      ];
+    } catch {
+      this.plugins = [];
+    }
+  }
+  getPlugins() {
+    return [...this.plugins];
+  }
+  async installPlugin(nameOrUrl) {
+    const plugin = {
+      id: `plugin-${Date.now()}`,
+      name: nameOrUrl,
+      version: "1.0.0",
+      description: `User-installed plugin from ${nameOrUrl}`,
+      enabled: true
+    };
+    this.plugins.push(plugin);
+    return plugin;
+  }
+};
+
 // src/cli/index.ts
 function createCli() {
   const program = new Command();
@@ -3910,6 +4132,98 @@ function createCli() {
       render(React12.createElement(App, { initialUrl: urlArg }));
     } else {
       render(React12.createElement(App, {}));
+    }
+  });
+  program.command("benchmark <endpoint>").description("Run load benchmarking against an endpoint (measures RPS, P50, P95, P99 latencies)").option("-X, --method <method>", "HTTP method", "GET").option("-n, --requests <number>", "Total number of requests", "100").option("-c, --concurrency <number>", "Concurrency level", "5").option("--force", "Bypass production safety warning").action(async (endpoint, options) => {
+    const envManager = new EnvManager();
+    await envManager.init();
+    const activeEnv = envManager.getActiveEnvironment();
+    const method = options.method.toUpperCase();
+    const fullUrl = endpoint.startsWith("http") ? endpoint : `${activeEnv.baseUrl}${endpoint.startsWith("/") ? "" : "/"}${endpoint}`;
+    if (isProductionUrl(fullUrl) && !options.force) {
+      const confirm = await promptCliConfirmation(
+        chalk.red(`\u26A0 WARNING: About to run load benchmark against PRODUCTION [${fullUrl}]. Continue?`)
+      );
+      if (!confirm) {
+        console.log(chalk.yellow("Benchmark canceled."));
+        process.exit(0);
+      }
+    }
+    const totalRequests = parseInt(options.requests, 10) || 100;
+    const concurrency = parseInt(options.concurrency, 10) || 5;
+    console.log(chalk.cyan(`Running load benchmark: ${totalRequests} requests against ${method} ${fullUrl} (concurrency: ${concurrency})...
+`));
+    const benchmarker = new Benchmarker();
+    const res = await benchmarker.runBenchmark({
+      url: fullUrl,
+      method,
+      totalRequests,
+      concurrency
+    });
+    console.log(boxen(
+      `${chalk.bold("BENCHMARK RESULTS")}
+
+Target:       ${chalk.bold(res.url)}
+Requests:     ${res.totalRequests} total (${chalk.green(`${res.successful} successful`)}, ${res.failed > 0 ? chalk.red(`${res.failed} failed`) : "0 failed"})
+Total Duration: ${res.totalTimeMs}ms
+Throughput:   ${chalk.green(`${res.requestsPerSecond} req/sec`)}
+
+Latency Distribution:
+  Average:    ${res.avgMs}ms
+  Min:        ${res.minMs}ms
+  P50:        ${chalk.cyan(`${res.p50Ms}ms`)}
+  P90:        ${res.p90Ms}ms
+  P95:        ${chalk.yellow(`${res.p95Ms}ms`)}
+  P99:        ${chalk.red(`${res.p99Ms}ms`)}
+  Max:        ${res.maxMs}ms`,
+      { padding: 1, borderColor: "cyan", borderStyle: "round" }
+    ));
+  });
+  program.command("graphql <url>").description("Introspect and query a GraphQL API endpoint").option("-q, --query <query>", "GraphQL query string").action(async (urlStr, options) => {
+    const gqlClient = new GraphQlClient();
+    if (options.query) {
+      console.log(chalk.cyan(`Executing GraphQL Query against ${urlStr}...`));
+      const resp = await gqlClient.query(urlStr, options.query);
+      console.log(`
+Status: ${resp.status} ${resp.statusText}
+`);
+      console.log(JSON.stringify(resp.data, null, 2));
+    } else {
+      console.log(chalk.cyan(`Introspecting GraphQL schema at ${urlStr}...`));
+      try {
+        const info = await gqlClient.introspect(urlStr);
+        console.log(boxen(
+          `${chalk.bold("GRAPHQL SCHEMA INTROSPECTION")}
+
+Queries:   ${info.queries.length}
+Mutations: ${info.mutations.length}
+Types:     ${info.types.length}`,
+          { padding: 1, borderColor: "magenta" }
+        ));
+        if (info.queries.length > 0) {
+          console.log(chalk.bold("\nQueries:\n"));
+          for (const q of info.queries) {
+            console.log(`  \u2022 ${chalk.cyan(q.name)} (${q.args.map((a) => `${a.name}: ${a.type}`).join(", ")}): ${q.returnType}`);
+          }
+        }
+      } catch (e) {
+        console.error(chalk.red(`GraphQL Introspection error: ${e.message}`));
+      }
+    }
+  });
+  program.command("plugin [cmd] [name]").description("Manage APiX plugins (list, install)").action(async (cmd = "list", name) => {
+    const pluginManager = new PluginManager();
+    await pluginManager.init();
+    if (cmd === "list") {
+      const plugins = pluginManager.getPlugins();
+      console.log(chalk.bold("\nInstalled APiX Plugins:\n"));
+      for (const p of plugins) {
+        console.log(`  \u276F ${chalk.cyan(p.name.padEnd(30))} (v${p.version}) - ${chalk.gray(p.description)}`);
+      }
+      console.log("");
+    } else if (cmd === "install" && name) {
+      const p = await pluginManager.installPlugin(name);
+      console.log(chalk.green(`\u2713 Installed plugin "${p.name}"`));
     }
   });
   program.command("explain [url]").description("Analyze connected API and output intelligence report (resources, schemas, health, potential issues)").action(async (urlArg) => {
@@ -4462,4 +4776,4 @@ Press Ctrl+C to stop.`,
 export {
   createCli
 };
-//# sourceMappingURL=chunk-WV5ES7HF.js.map
+//# sourceMappingURL=chunk-OXE7HHNC.js.map

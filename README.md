@@ -12,14 +12,18 @@ APiX is **NOT** a desktop GUI application. It is an interactive, keyboard-driven
 - **OpenAPI Auto-Discovery**: Automatically finds and parses OpenAPI 3.x and Swagger 2.0 specs at `/openapi.json`, `/swagger.json`, `/api-docs`, etc.
 - **Safe Probing Without OpenAPI**: Non-destructive discovery using `GET`, `OPTIONS`, and `HEAD` probes to infer available routes without corrupting remote state.
 - **Precision Timing Breakdown**: Socket-level metrics for **DNS lookup**, **TCP connect**, **TLS handshake**, **Server TTFB**, and **content download**.
-- **Production Safety Guards**: Automatic confirmation modal before executing destructive operations (`DELETE`, `PUT`, `PATCH`) in production environments.
+- **Load Benchmarking Engine**: Run concurrent load tests (`apix benchmark <endpoint> -n 100 -c 5`) with throughput calculation (req/sec) and **P50**, **P90**, **P95**, and **P99** latency distribution percentiles.
+- **GraphQL Discovery & Introspection**: Schema introspection (`apix graphql <url>`), discovering queries, mutations, types, and running raw GraphQL queries.
+- **Natural Language Control**: Query APIs with natural English (`apix ask "get the first 10 bookings"`).
+- **Production Safety Guards**: Automatic confirmation modal before executing destructive operations (`DELETE`, `PUT`, `PATCH`) or load benchmarks in production environments.
 - **Multi-Language Code Generator**: Generates 100% accurate request snippets for **cURL**, **JavaScript**, **TypeScript**, **Python**, **Go**, **Java**, **PHP**, **Dart**, **C#**, and **Rust**.
 - **Environments & Templating**: Interpolate `{{baseUrl}}`, `{{token}}`, `{{userId}}` across local, development, staging, and production.
 - **Auth Profiles & Secret Masking**: Automatic masking of sensitive headers (`Authorization: Bearer ********`) in terminal displays and request history.
-- **Contract & Assertion Testing**: Run automated assertions on status codes, JSON paths, response headers, and OpenAPI schemas.
+- **Contract & Assertion Testing**: Run automated assertions on status codes, JSON paths, response headers, and OpenAPI schemas (`apix test --ci`).
 - **OpenAPI Spec Diffing**: Detect breaking changes, added/removed endpoints, and schema modifications between two API definitions.
-- **API Quality Score**: Analyzes documentation coverage, schema completeness, error definitions, and examples.
-- **Local Mock Server**: Serve synthetic schema-compliant responses directly from an OpenAPI specification.
+- **API Quality Score**: Analyzes documentation coverage, schema completeness, error definitions, and examples (`apix analyze`).
+- **Local Mock Server**: Serve synthetic schema-compliant responses directly from an OpenAPI specification (`apix mock openapi.json`).
+- **Plugin Architecture**: Modular plugin manager (`apix plugin list`).
 
 ---
 
@@ -86,6 +90,23 @@ apix connect https://api.example.com
 # Ping endpoint connectivity & breakdown metrics
 apix ping http://localhost:4000
 
+# Generate API Intelligence Report
+apix explain http://localhost:4000
+
+# Direct HTTP Method Executions
+apix GET http://localhost:4000/users
+apix POST http://localhost:4000/users -d '{"name":"Praise"}'
+
+# Load Benchmarking (P50/P95/P99 latencies)
+apix benchmark http://localhost:4000/users -n 100 -c 5
+
+# GraphQL Introspection & Querying
+apix graphql http://localhost:4000/graphql
+apix graphql http://localhost:4000/graphql -q "query { users { id name } }"
+
+# Natural Language Querying
+apix ask "get the first 10 bookings"
+
 # List discovered endpoints
 apix endpoints http://localhost:4000
 
@@ -96,8 +117,8 @@ apix search users
 apix run /users/42 -X GET
 apix run /users -X POST -d '{"name":"Praise"}'
 
-# Run contract tests
-apix test http://localhost:4000
+# Run contract tests in CI/CD mode
+apix test http://localhost:4000 --ci
 
 # Compare two OpenAPI specifications for breaking changes
 apix diff openapi-v1.json openapi-v2.json
@@ -108,8 +129,9 @@ apix docs generate openapi.json --format markdown
 # Generate code snippet
 apix generate python /users -X POST
 
-# Import cURL command
+# Import cURL command or Postman Collection
 apix import curl "curl -X POST 'http://localhost:3000/users' -H 'Authorization: Bearer token123'"
+apix import collection postman_collection.json
 
 # Environment management
 apix env list
@@ -124,6 +146,12 @@ apix analyze http://localhost:4000
 # Local Mock Server
 apix mock openapi.json --port 5050
 
+# Shareable Git Projects
+apix project init
+
+# Plugin management
+apix plugin list
+
 # Configuration
 apix config list
 apix config set theme dark
@@ -134,7 +162,7 @@ apix config set theme dark
 ## 🔒 Security & Production Protection
 
 1. **Secret Redaction**: Passwords, Bearer tokens, API keys, and authorization headers are masked (`sk-****abc`) both in visual logs and stored history files (`~/.apix/history.json`).
-2. **Production Confirmation**: Dangerous methods (`DELETE`, `PUT`, `PATCH`) executed against URLs or environments flagged as `PRODUCTION` require explicit confirmation unless `--force` is provided.
+2. **Production Confirmation**: Dangerous methods (`DELETE`, `PUT`, `PATCH`) or load benchmarks executed against URLs or environments flagged as `PRODUCTION` require explicit confirmation unless `--force` is provided.
 3. **ANSI Sanitization**: API response bodies are sanitized to strip terminal escape sequences before rendering to protect terminal emulators against injection attacks.
 4. **TLS Verification**: TLS verification is active by default. Use `--insecure` only during local testing with self-signed certificates.
 
@@ -163,57 +191,3 @@ npm test
 ## 📄 License
 
 MIT © Google Deepmind Team / APiX Contributors
-
-
-Here are the recommended next steps:
-
-### 1. Link APiX Locally for System-Wide CLI Access
-Run the following in the project root to make the `apix` command available globally in your Windows PowerShell / CMD:
-
-```bash
-npm link
-```
-
-After running `npm link`, you can type:
-```bash
-apix
-```
-from **any directory** in your terminal to launch the interactive TUI.
-
----
-
-### 2. Try the Key Workflows
-
-- **Explore a Local API**:
-  ```bash
-  apix connect http://localhost:3000
-  ```
-- **Generate an API Intelligence Report**:
-  ```bash
-  apix explain http://localhost:3000
-  ```
-- **Execute Direct Commands**:
-  ```bash
-  apix run /users
-  apix GET http://localhost:3000/health
-  ```
-- **Spin Up a Local Mock Server**:
-  ```bash
-  apix mock tests/fixtures/openapi.json --port 5050
-  ```
-- **Initialize a Shareable Project**:
-  ```bash
-  apix project init
-  ```
-
----
-
-### 3. Package & Publish
-
-To package for distribution or publish to npm:
-```bash
-npm pack      # Creates apix-cli-1.0.0.tgz tarball
-npm publish   # Publishes apix-cli to the npm registry
-```
-
-Which of these would you like to explore or customize next?
