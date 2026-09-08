@@ -1,0 +1,5 @@
+# APiX Project Configuration
+name: "Team API Project"
+version: "1.0.0"
+defaultEnvironment: "local"
+openapiPath: "./openapi.json"

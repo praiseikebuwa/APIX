@@ -1,0 +1,8 @@
+{
+  "name": "local",
+  "baseUrl": "http://localhost:3000",
+  "variables": {
+    "baseUrl": "http://localhost:3000"
+  },
+  "isProduction": false
+}

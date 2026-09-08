@@ -1,0 +1,163 @@
+import type { ApiSpec } from '../../types/index.js';
+import { CodeGenerator } from '../generators/index.js';
+
+export class DocsGenerator {
+  public static generateMarkdown(spec: ApiSpec): string {
+    const lines: string[] = [];
+    lines.push(`# ${spec.title} (v${spec.version})`);
+    if (spec.description) lines.push(`\n${spec.description}\n`);
+    lines.push(`**Base URL:** \`${spec.baseUrl}\`\n`);
+
+    lines.push(`## Endpoints\n`);
+
+    // Group by tags
+    const groups: Record<string, typeof spec.endpoints> = {};
+    for (const ep of spec.endpoints) {
+      const tag = ep.tags[0] || 'General';
+      if (!groups[tag]) groups[tag] = [];
+      groups[tag].push(ep);
+    }
+
+    for (const [tag, endpoints] of Object.entries(groups)) {
+      lines.push(`### ${tag}\n`);
+      for (const ep of endpoints) {
+        lines.push(`#### \`${ep.method}\` ${ep.path}`);
+        if (ep.summary) lines.push(`*${ep.summary}*`);
+        if (ep.description) lines.push(`\n${ep.description}\n`);
+
+        if (ep.parameters.length > 0) {
+          lines.push('\n**Parameters:**');
+          lines.push('| Name | Location | Required | Description |');
+          lines.push('| :--- | :--- | :--- | :--- |');
+          for (const p of ep.parameters) {
+            lines.push(
+              `| \`${p.name}\` | ${p.in} | ${p.required ? '**Yes**' : 'No'} | ${p.description || '-'} |`
+            );
+          }
+          lines.push('');
+        }
+
+        if (ep.requestBody) {
+          lines.push(`**Request Body (${ep.requestBody.contentType}):**`);
+          if (ep.requestBody.description) lines.push(`*${ep.requestBody.description}*`);
+          if (ep.requestBody.example) {
+            lines.push('```json');
+            lines.push(JSON.stringify(ep.requestBody.example, null, 2));
+            lines.push('```\n');
+          }
+        }
+
+        lines.push('**Responses:**');
+        for (const resp of ep.responses) {
+          lines.push(`- **${resp.statusCode}**: ${resp.description || 'Response'}`);
+          if (resp.example) {
+            lines.push('  ```json');
+            lines.push('  ' + JSON.stringify(resp.example, null, 2).split('\n').join('\n  '));
+            lines.push('  ```');
+          }
+        }
+
+        const curl = CodeGenerator.generate('curl', {
+          url: `${spec.baseUrl}${ep.path}`,
+          method: ep.method,
+          body: ep.requestBody?.example,
+        });
+        lines.push('\n**cURL Example:**');
+        lines.push('```bash');
+        lines.push(curl);
+        lines.push('```\n');
+        lines.push('---\n');
+      }
+    }
+
+    return lines.join('\n');
+  }
+
+  public static generateHtml(spec: ApiSpec): string {
+    const md = this.generateMarkdown(spec);
+    // Return a self-contained modern HTML page with styling
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${spec.title} - APiX Documentation</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #38bdf8;
+      --accent: #818cf8;
+      --border: #334155;
+      --badge-get: #10b981;
+      --badge-post: #3b82f6;
+      --badge-put: #f59e0b;
+      --badge-delete: #ef4444;
+      --badge-patch: #8b5cf6;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      margin: 0;
+      padding: 2rem;
+    }
+    .container { max-width: 960px; margin: 0 auto; }
+    h1 { color: var(--primary); border-bottom: 2px solid var(--border); padding-bottom: 0.5rem; }
+    h2 { color: var(--accent); margin-top: 2rem; }
+    h3 { margin-top: 1.5rem; color: #cbd5e1; }
+    .endpoint { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; }
+    .method-badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: bold; font-size: 0.85rem; color: white; margin-right: 0.5rem; }
+    .method-GET { background: var(--badge-get); }
+    .method-POST { background: var(--badge-post); }
+    .method-PUT { background: var(--badge-put); }
+    .method-DELETE { background: var(--badge-delete); }
+    .method-PATCH { background: var(--badge-patch); }
+    pre { background: #020617; padding: 1rem; border-radius: 6px; overflow-x: auto; color: #e2e8f0; font-size: 0.9rem; }
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+    th, td { border: 1px solid var(--border); padding: 0.6rem; text-align: left; }
+    th { background: #020617; color: var(--primary); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>${spec.title} <small style="font-size:0.5em;color:var(--text-muted)">v${spec.version}</small></h1>
+    <p>${spec.description || 'API Documentation generated by APiX.'}</p>
+    <p><strong>Base URL:</strong> <code>${spec.baseUrl}</code></p>
+    <h2>Endpoints (${spec.endpoints.length})</h2>
+    ${spec.endpoints
+      .map(
+        (ep) => `
+      <div class="endpoint">
+        <div>
+          <span class="method-badge method-${ep.method}">${ep.method}</span>
+          <strong style="font-size:1.1rem">${ep.path}</strong>
+        </div>
+        <p style="color:var(--text-muted);margin:0.5rem 0;">${ep.summary || ''}</p>
+        ${
+          ep.parameters.length > 0
+            ? `<h4>Parameters</h4>
+            <table>
+              <tr><th>Name</th><th>In</th><th>Required</th><th>Description</th></tr>
+              ${ep.parameters
+                .map(
+                  (p) =>
+                    `<tr><td><code>${p.name}</code></td><td>${p.in}</td><td>${p.required ? 'Yes' : 'No'}</td><td>${p.description || '-'}</td></tr>`
+                )
+                .join('')}
+            </table>`
+            : ''
+        }
+        <h4>cURL</h4>
+        <pre><code>${CodeGenerator.generate('curl', { url: `${spec.baseUrl}${ep.path}`, method: ep.method, body: ep.requestBody?.example })}</code></pre>
+      </div>`
+      )
+      .join('')}
+  </div>
+</body>
+</html>`;
+  }
+}
