@@ -4,6 +4,7 @@ import boxen from 'boxen';
 import Table from 'cli-table3';
 import { render } from 'ink';
 import React from 'react';
+import YAML from 'yaml';
 import { App } from '../tui/app.js';
 import { HttpClient } from '../core/client/http-client.js';
 import { OpenApiDiscovery } from '../core/discovery/openapi-discovery.js';
@@ -28,6 +29,7 @@ import { ProjectManager } from '../core/projects/project-manager.js';
 import { Benchmarker } from '../core/benchmark/benchmarker.js';
 import { GraphQlClient } from '../core/graphql/graphql-client.js';
 import { PluginManager } from '../core/plugins/plugin-manager.js';
+import { ApixFormatParser } from '../core/format/apix-format.js';
 import { isDangerousMethod, isProductionUrl, promptCliConfirmation } from '../core/security/safety.js';
 import type { HttpMethod, HttpRequestConfig } from '../types/index.js';
 
@@ -39,15 +41,47 @@ export function createCli(): Command {
     .description('APiX: Universal terminal-native API exploration, testing, and automation platform')
     .version('1.0.0');
 
-  // Default action: Connect URL or launch interactive Terminal UI
+  // Default action: Connect URL, open .apix file, or launch interactive Terminal UI
   program
-    .argument('[url]', 'Target API URL to explore')
-    .action(async (urlArg?: string) => {
-      if (urlArg && (urlArg.startsWith('http://') || urlArg.startsWith('https://'))) {
-        render(React.createElement(App, { initialUrl: urlArg }));
+    .argument('[target]', 'Target API URL or .apix file to open')
+    .action(async (targetArg?: string) => {
+      if (targetArg && targetArg.endsWith('.apix')) {
+        const apixData = await ApixFormatParser.loadFile(targetArg);
+        const spec = ApixFormatParser.convertToApiSpec(apixData);
+        console.log(chalk.green(`✓ Opened .apix project: ${spec.title} (${spec.endpoints.length} requests)`));
+        render(React.createElement(App, { initialUrl: spec.baseUrl }));
+      } else if (targetArg && (targetArg.startsWith('http://') || targetArg.startsWith('https://'))) {
+        render(React.createElement(App, { initialUrl: targetArg }));
       } else {
         render(React.createElement(App, {}));
       }
+    });
+
+  // apix open <file.apix>
+  program
+    .command('open <file>')
+    .description('Open an executable .apix project file')
+    .action(async (file: string) => {
+      const apixData = await ApixFormatParser.loadFile(file);
+      const spec = ApixFormatParser.convertToApiSpec(apixData);
+      console.log(chalk.green(`✓ Loaded .apix file: ${spec.title}`));
+      render(React.createElement(App, { initialUrl: spec.baseUrl }));
+    });
+
+  // apix init <file.apix>
+  program
+    .command('init [file]')
+    .description('Initialize a human-readable .apix YAML project file (e.g. api.apix)')
+    .action(async (file: string = 'api.apix') => {
+      const target = file.endsWith('.apix') ? file : `${file}.apix`;
+      const yamlStr = ApixFormatParser.generateSampleApixYaml(file.replace('.apix', ''));
+      await ApixFormatParser.saveFile(target, YAML.parse(yamlStr));
+      console.log(boxen(
+        `${chalk.green('✓ CREATED .apix PROJECT FILE')}\n\n` +
+          `File: ${chalk.bold(target)}\n\n` +
+          `Commit this file to Git for version-controlled API requests, tests, and workflows.`,
+        { padding: 1, borderColor: 'green' }
+      ));
     });
 
   // apix benchmark <endpoint>
@@ -678,73 +712,6 @@ export function createCli(): Command {
         method: options.method.toUpperCase() as HttpMethod,
       });
       console.log(code);
-    });
-
-  // apix project init - Shareable .apix Projects
-  program
-    .command('project <cmd>')
-    .description('Manage shareable Git-committed .apix projects (init)')
-    .action(async (cmd: string) => {
-      if (cmd === 'init') {
-        const apixDir = await ProjectManager.initProject();
-        console.log(chalk.green(`✓ Initialized shareable APiX project at ${apixDir}`));
-        console.log(chalk.gray('Commit the .apix/ directory to Git to share API workflows and collections with your team.'));
-      }
-    });
-
-  // apix save <name> & apix use <name> & apix list
-  program
-    .command('save <name>')
-    .description('Save current connected API to local collection store')
-    .action(async (name: string) => {
-      const collectionManager = new CollectionManager();
-      await collectionManager.init();
-      collectionManager.createCollection(name);
-      await collectionManager.save();
-      console.log(chalk.green(`✓ Saved collection "${name}"`));
-    });
-
-  program
-    .command('list')
-    .description('List all saved APIs and collections')
-    .action(async () => {
-      const collectionManager = new CollectionManager();
-      await collectionManager.init();
-      const collections = collectionManager.getCollections();
-      console.log(chalk.bold('\nSaved APIs & Collections:\n'));
-      for (const c of collections) {
-        console.log(`  ❯ ${chalk.cyan(c.name.padEnd(25))} (${c.requests.length} requests)`);
-      }
-      console.log('');
-    });
-
-  // apix import <type> <source>
-  program
-    .command('import <type> <source>')
-    .description('Import an OpenAPI spec, Postman collection, or cURL command (openapi | curl | collection)')
-    .action(async (type: string, source: string) => {
-      if (type.toLowerCase() === 'curl') {
-        const config = CurlParser.parse(source);
-        console.log(boxen(
-          `${chalk.green('✓ PARSED cURL COMMAND')}\n\n` +
-            `Method:  ${chalk.bold(config.method)}\n` +
-            `URL:     ${chalk.bold(config.url)}\n` +
-            `Headers: ${Object.keys(config.headers || {}).length}\n` +
-            `Body:    ${config.body ? 'Detected' : 'None'}`,
-          { padding: 1, borderColor: 'green' }
-        ));
-      } else if (type.toLowerCase() === 'openapi') {
-        const discovery = new OpenApiDiscovery();
-        const spec = await discovery.importFromFile(source);
-        console.log(chalk.green(`✓ Imported OpenAPI: ${spec.title} (${spec.endpoints.length} endpoints)`));
-      } else if (type.toLowerCase() === 'collection') {
-        const collectionManager = new CollectionManager();
-        await collectionManager.init();
-        const col = await collectionManager.importCollection(source);
-        console.log(chalk.green(`✓ Imported Collection: ${col.name} (${col.requests.length} requests)`));
-      } else {
-        console.log(chalk.red(`Unknown import type: ${type}. Use "curl", "openapi", or "collection".`));
-      }
     });
 
   // apix env [cmd] [name]

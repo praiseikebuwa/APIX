@@ -1,0 +1,52 @@
+version: 1
+name: my-api
+description: Executable APiX project format specification
+baseUrl: "{{baseUrl}}"
+environments:
+  development:
+    baseUrl: http://localhost:4000
+    variables:
+      baseUrl: http://localhost:4000
+  production:
+    baseUrl: https://api.example.com
+    isProduction: true
+    variables:
+      baseUrl: https://api.example.com
+auth:
+  type: bearer
+  token: "{{API_TOKEN}}"
+requests:
+  - name: List Users
+    method: GET
+    path: /users
+    summary: Retrieve all users
+    query:
+      limit: 10
+      page: 1
+    tests:
+      - expect:
+          status: 200
+  - name: Get User By ID
+    method: GET
+    path: /users/{id}
+    summary: Retrieve user by ID
+  - name: Create User
+    method: POST
+    path: /users
+    summary: Create a new user
+    body:
+      name: "{{name}}"
+      email: "{{email}}"
+    tests:
+      - expect:
+          status: 201
+workflows:
+  - name: User Onboarding Flow
+    description: Authenticate and fetch user details
+    steps:
+      - request: Create User
+        save:
+          userId: response.id
+      - request: Get User By ID
+        variables:
+          id: "{{userId}}"

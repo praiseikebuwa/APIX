@@ -5,6 +5,7 @@ import boxen from "boxen";
 import Table from "cli-table3";
 import { render } from "ink";
 import React12 from "react";
+import YAML3 from "yaml";
 
 // src/tui/app.tsx
 import { useState as useState11 } from "react";
@@ -807,17 +808,17 @@ var EnvManager = class {
         },
         {
           name: "staging",
-          baseUrl: "https://staging.example.com",
+          baseUrl: "",
           variables: {
-            baseUrl: "https://staging.example.com"
+            baseUrl: ""
           },
           isProduction: false
         },
         {
           name: "production",
-          baseUrl: "https://api.example.com",
+          baseUrl: "",
           variables: {
-            baseUrl: "https://api.example.com"
+            baseUrl: ""
           },
           isProduction: true
         }
@@ -3647,100 +3648,6 @@ var ApiExplainer = class {
   }
 };
 
-// src/core/curl/curl-parser.ts
-var CurlParser = class {
-  static parse(curlCmd) {
-    const trimmed = curlCmd.trim().replace(/^curl\s+/i, "");
-    const tokens = this.tokenize(trimmed);
-    let method = "GET";
-    let url = "";
-    const headers = {};
-    let body = void 0;
-    for (let i = 0; i < tokens.length; i++) {
-      const token = tokens[i];
-      if (token === "-X" || token === "--request") {
-        const next = tokens[++i];
-        if (next) method = next.toUpperCase();
-      } else if (token === "-H" || token === "--header") {
-        const headerStr = tokens[++i];
-        if (headerStr) {
-          const colonIdx = headerStr.indexOf(":");
-          if (colonIdx > 0) {
-            const key = headerStr.slice(0, colonIdx).trim();
-            const val = headerStr.slice(colonIdx + 1).trim();
-            headers[key] = val;
-          }
-        }
-      } else if (token === "-d" || token === "--data" || token === "--data-raw" || token === "--data-binary") {
-        const dataStr = tokens[++i];
-        if (dataStr) {
-          if (method === "GET") method = "POST";
-          try {
-            body = JSON.parse(dataStr);
-          } catch {
-            body = dataStr;
-          }
-        }
-      } else if (token === "--url") {
-        const next = tokens[++i];
-        if (next) url = next;
-      } else if (!token.startsWith("-") && !url) {
-        url = token;
-      }
-    }
-    if (!url) {
-      throw new Error("Could not parse target URL from curl command");
-    }
-    url = url.replace(/^['"]|['"]$/g, "");
-    return {
-      url,
-      method,
-      headers: Object.keys(headers).length > 0 ? headers : void 0,
-      body
-    };
-  }
-  static tokenize(str) {
-    const tokens = [];
-    let current = "";
-    let inQuote = null;
-    let escape = false;
-    for (let i = 0; i < str.length; i++) {
-      const char = str[i];
-      if (escape) {
-        current += char;
-        escape = false;
-        continue;
-      }
-      if (char === "\\") {
-        escape = true;
-        continue;
-      }
-      if (inQuote) {
-        if (char === inQuote) {
-          inQuote = null;
-        } else {
-          current += char;
-        }
-      } else {
-        if (char === "'" || char === '"') {
-          inQuote = char;
-        } else if (/\s/.test(char)) {
-          if (current) {
-            tokens.push(current);
-            current = "";
-          }
-        } else {
-          current += char;
-        }
-      }
-    }
-    if (current) {
-      tokens.push(current);
-    }
-    return tokens;
-  }
-};
-
 // src/core/config/config-manager.ts
 import fs6 from "fs/promises";
 import os5 from "os";
@@ -3859,45 +3766,6 @@ var NlRequestBuilder = class {
       body: extractedBody,
       explanation: `Mapped "${query}" to ${bestEndpoint.method} ${bestEndpoint.path} based on endpoint tags and parameter schema.`
     };
-  }
-};
-
-// src/core/projects/project-manager.ts
-import fs7 from "fs/promises";
-import path7 from "path";
-var ProjectManager = class {
-  static async initProject(cwd = process.cwd()) {
-    const apixDir = path7.join(cwd, ".apix");
-    await fs7.mkdir(apixDir, { recursive: true });
-    await fs7.mkdir(path7.join(apixDir, "environments"), { recursive: true });
-    await fs7.mkdir(path7.join(apixDir, "collections"), { recursive: true });
-    await fs7.mkdir(path7.join(apixDir, "workflows"), { recursive: true });
-    await fs7.mkdir(path7.join(apixDir, "tests"), { recursive: true });
-    const configYaml = `# APiX Project Configuration
-name: "Team API Project"
-version: "1.0.0"
-defaultEnvironment: "local"
-openapiPath: "./openapi.json"
-`;
-    await fs7.writeFile(path7.join(apixDir, "config.yaml"), configYaml, "utf-8");
-    const localEnv = {
-      name: "local",
-      baseUrl: "http://localhost:3000",
-      variables: {
-        baseUrl: "http://localhost:3000"
-      },
-      isProduction: false
-    };
-    await fs7.writeFile(path7.join(apixDir, "environments", "local.json"), JSON.stringify(localEnv, null, 2), "utf-8");
-    const readme = `# .apix Project
-
-Shared APiX API definitions, environments, collections, workflows, and test assertions.
-Commit this directory to Git to share API specs with your team.
-
-Secrets must be kept in your local APiX config or referenced via environment variables.
-`;
-    await fs7.writeFile(path7.join(apixDir, "README.md"), readme, "utf-8");
-    return apixDir;
   }
 };
 
@@ -4066,18 +3934,18 @@ var GraphQlClient = class {
 };
 
 // src/core/plugins/plugin-manager.ts
-import fs8 from "fs/promises";
+import fs7 from "fs/promises";
 import os6 from "os";
-import path8 from "path";
+import path7 from "path";
 var PluginManager = class {
   pluginDir;
   plugins = [];
   constructor(customDir) {
-    this.pluginDir = customDir || path8.join(os6.homedir(), ".apix", "plugins");
+    this.pluginDir = customDir || path7.join(os6.homedir(), ".apix", "plugins");
   }
   async init() {
     try {
-      await fs8.mkdir(this.pluginDir, { recursive: true });
+      await fs7.mkdir(this.pluginDir, { recursive: true });
       this.plugins = [
         {
           id: "rest-openapi",
@@ -4123,16 +3991,191 @@ var PluginManager = class {
   }
 };
 
+// src/core/format/apix-format.ts
+import YAML2 from "yaml";
+import fs8 from "fs/promises";
+import path8 from "path";
+var ApixFormatParser = class {
+  static parseYaml(content) {
+    try {
+      const parsed = YAML2.parse(content);
+      if (!parsed || typeof parsed !== "object") {
+        throw new Error("Invalid .apix file content: Root must be a YAML object");
+      }
+      return parsed;
+    } catch (e) {
+      throw new Error(`Failed to parse .apix YAML format: ${e.message}`);
+    }
+  }
+  static async loadFile(filePath) {
+    const resolvedPath = path8.resolve(filePath);
+    const content = await fs8.readFile(resolvedPath, "utf-8");
+    return this.parseYaml(content);
+  }
+  static async saveFile(filePath, schema) {
+    const resolvedPath = path8.resolve(filePath);
+    const yamlStr = YAML2.stringify(schema);
+    await fs8.writeFile(resolvedPath, yamlStr, "utf-8");
+  }
+  static convertToApiSpec(apixData) {
+    const endpoints = (apixData.requests || []).map((req, i) => {
+      const assertions = (req.tests || []).map((t, idx) => ({
+        id: `ast_${idx}`,
+        type: t.expect.status ? "status" : "jsonpath",
+        expression: t.expect.status ? "status" : t.expect.path || "status",
+        operator: t.expect.status ? "equals" : "exists",
+        expected: t.expect.status || t.expect.equals
+      }));
+      return {
+        id: req.name.toLowerCase().replace(/[^a-z0-9]/g, "_") || `req_${i}`,
+        method: req.method,
+        path: req.path,
+        summary: req.summary || req.name,
+        tags: ["General"],
+        parameters: [],
+        requestBody: req.body ? { contentType: "application/json", example: req.body } : void 0,
+        responses: [
+          {
+            statusCode: 200,
+            description: "OK"
+          }
+        ],
+        source: "DOCUMENTED"
+      };
+    });
+    return {
+      title: apixData.name || "APiX Project",
+      version: String(apixData.version || "1.0.0"),
+      description: apixData.description,
+      baseUrl: apixData.baseUrl || "http://localhost:3000",
+      servers: [apixData.baseUrl || "http://localhost:3000"],
+      endpoints,
+      schemas: {}
+    };
+  }
+  static generateSampleApixYaml(name = "Homely API") {
+    const sample = {
+      version: 1,
+      name,
+      description: "Executable APiX project format specification",
+      baseUrl: "{{baseUrl}}",
+      environments: {
+        development: {
+          baseUrl: "http://localhost:4000",
+          variables: {
+            baseUrl: "http://localhost:4000"
+          }
+        },
+        production: {
+          baseUrl: "https://api.example.com",
+          isProduction: true,
+          variables: {
+            baseUrl: "https://api.example.com"
+          }
+        }
+      },
+      auth: {
+        type: "bearer",
+        token: "{{API_TOKEN}}"
+      },
+      requests: [
+        {
+          name: "List Users",
+          method: "GET",
+          path: "/users",
+          summary: "Retrieve all users",
+          query: { limit: 10, page: 1 },
+          tests: [
+            {
+              expect: {
+                status: 200
+              }
+            }
+          ]
+        },
+        {
+          name: "Get User By ID",
+          method: "GET",
+          path: "/users/{id}",
+          summary: "Retrieve user by ID"
+        },
+        {
+          name: "Create User",
+          method: "POST",
+          path: "/users",
+          summary: "Create a new user",
+          body: {
+            name: "{{name}}",
+            email: "{{email}}"
+          },
+          tests: [
+            {
+              expect: {
+                status: 201
+              }
+            }
+          ]
+        }
+      ],
+      workflows: [
+        {
+          name: "User Onboarding Flow",
+          description: "Authenticate and fetch user details",
+          steps: [
+            {
+              request: "Create User",
+              save: {
+                userId: "response.id"
+              }
+            },
+            {
+              request: "Get User By ID",
+              variables: {
+                id: "{{userId}}"
+              }
+            }
+          ]
+        }
+      ]
+    };
+    return YAML2.stringify(sample);
+  }
+};
+
 // src/cli/index.ts
 function createCli() {
   const program = new Command();
   program.name("apix").description("APiX: Universal terminal-native API exploration, testing, and automation platform").version("1.0.0");
-  program.argument("[url]", "Target API URL to explore").action(async (urlArg) => {
-    if (urlArg && (urlArg.startsWith("http://") || urlArg.startsWith("https://"))) {
-      render(React12.createElement(App, { initialUrl: urlArg }));
+  program.argument("[target]", "Target API URL or .apix file to open").action(async (targetArg) => {
+    if (targetArg && targetArg.endsWith(".apix")) {
+      const apixData = await ApixFormatParser.loadFile(targetArg);
+      const spec = ApixFormatParser.convertToApiSpec(apixData);
+      console.log(chalk.green(`\u2713 Opened .apix project: ${spec.title} (${spec.endpoints.length} requests)`));
+      render(React12.createElement(App, { initialUrl: spec.baseUrl }));
+    } else if (targetArg && (targetArg.startsWith("http://") || targetArg.startsWith("https://"))) {
+      render(React12.createElement(App, { initialUrl: targetArg }));
     } else {
       render(React12.createElement(App, {}));
     }
+  });
+  program.command("open <file>").description("Open an executable .apix project file").action(async (file) => {
+    const apixData = await ApixFormatParser.loadFile(file);
+    const spec = ApixFormatParser.convertToApiSpec(apixData);
+    console.log(chalk.green(`\u2713 Loaded .apix file: ${spec.title}`));
+    render(React12.createElement(App, { initialUrl: spec.baseUrl }));
+  });
+  program.command("init [file]").description("Initialize a human-readable .apix YAML project file (e.g. api.apix)").action(async (file = "api.apix") => {
+    const target = file.endsWith(".apix") ? file : `${file}.apix`;
+    const yamlStr = ApixFormatParser.generateSampleApixYaml(file.replace(".apix", ""));
+    await ApixFormatParser.saveFile(target, YAML3.parse(yamlStr));
+    console.log(boxen(
+      `${chalk.green("\u2713 CREATED .apix PROJECT FILE")}
+
+File: ${chalk.bold(target)}
+
+Commit this file to Git for version-controlled API requests, tests, and workflows.`,
+      { padding: 1, borderColor: "green" }
+    ));
   });
   program.command("benchmark <endpoint>").description("Run load benchmarking against an endpoint (measures RPS, P50, P95, P99 latencies)").option("-X, --method <method>", "HTTP method", "GET").option("-n, --requests <number>", "Total number of requests", "100").option("-c, --concurrency <number>", "Concurrency level", "5").option("--force", "Bypass production safety warning").action(async (endpoint, options) => {
     const envManager = new EnvManager();
@@ -4615,55 +4658,6 @@ Results: ${chalk.green(`${passed} passed`)}, ${failed > 0 ? chalk.red(`${failed}
     });
     console.log(code);
   });
-  program.command("project <cmd>").description("Manage shareable Git-committed .apix projects (init)").action(async (cmd) => {
-    if (cmd === "init") {
-      const apixDir = await ProjectManager.initProject();
-      console.log(chalk.green(`\u2713 Initialized shareable APiX project at ${apixDir}`));
-      console.log(chalk.gray("Commit the .apix/ directory to Git to share API workflows and collections with your team."));
-    }
-  });
-  program.command("save <name>").description("Save current connected API to local collection store").action(async (name) => {
-    const collectionManager = new CollectionManager();
-    await collectionManager.init();
-    collectionManager.createCollection(name);
-    await collectionManager.save();
-    console.log(chalk.green(`\u2713 Saved collection "${name}"`));
-  });
-  program.command("list").description("List all saved APIs and collections").action(async () => {
-    const collectionManager = new CollectionManager();
-    await collectionManager.init();
-    const collections = collectionManager.getCollections();
-    console.log(chalk.bold("\nSaved APIs & Collections:\n"));
-    for (const c of collections) {
-      console.log(`  \u276F ${chalk.cyan(c.name.padEnd(25))} (${c.requests.length} requests)`);
-    }
-    console.log("");
-  });
-  program.command("import <type> <source>").description("Import an OpenAPI spec, Postman collection, or cURL command (openapi | curl | collection)").action(async (type, source) => {
-    if (type.toLowerCase() === "curl") {
-      const config = CurlParser.parse(source);
-      console.log(boxen(
-        `${chalk.green("\u2713 PARSED cURL COMMAND")}
-
-Method:  ${chalk.bold(config.method)}
-URL:     ${chalk.bold(config.url)}
-Headers: ${Object.keys(config.headers || {}).length}
-Body:    ${config.body ? "Detected" : "None"}`,
-        { padding: 1, borderColor: "green" }
-      ));
-    } else if (type.toLowerCase() === "openapi") {
-      const discovery = new OpenApiDiscovery();
-      const spec = await discovery.importFromFile(source);
-      console.log(chalk.green(`\u2713 Imported OpenAPI: ${spec.title} (${spec.endpoints.length} endpoints)`));
-    } else if (type.toLowerCase() === "collection") {
-      const collectionManager = new CollectionManager();
-      await collectionManager.init();
-      const col = await collectionManager.importCollection(source);
-      console.log(chalk.green(`\u2713 Imported Collection: ${col.name} (${col.requests.length} requests)`));
-    } else {
-      console.log(chalk.red(`Unknown import type: ${type}. Use "curl", "openapi", or "collection".`));
-    }
-  });
   program.command("env [cmd] [name]").description("Manage environments (list, use, create)").action(async (cmd, name) => {
     const envManager = new EnvManager();
     await envManager.init();
@@ -4776,4 +4770,4 @@ Press Ctrl+C to stop.`,
 export {
   createCli
 };
-//# sourceMappingURL=chunk-OXE7HHNC.js.map
+//# sourceMappingURL=chunk-2HJDN3LW.js.map

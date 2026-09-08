@@ -23,7 +23,7 @@ export class EnvManager {
       this.environments = parsed.environments || [];
       this.activeEnvName = parsed.activeEnvName || 'local';
     } catch {
-      // Initialize defaults
+      // Initialize environment structure
       this.environments = [
         {
           name: 'local',
@@ -44,17 +44,17 @@ export class EnvManager {
         },
         {
           name: 'staging',
-          baseUrl: 'https://staging.example.com',
+          baseUrl: '',
           variables: {
-            baseUrl: 'https://staging.example.com',
+            baseUrl: '',
           },
           isProduction: false,
         },
         {
           name: 'production',
-          baseUrl: 'https://api.example.com',
+          baseUrl: '',
           variables: {
-            baseUrl: 'https://api.example.com',
+            baseUrl: '',
           },
           isProduction: true,
         },

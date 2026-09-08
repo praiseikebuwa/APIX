@@ -1,0 +1,44 @@
+{
+  "name": "apix-vscode",
+  "displayName": "APiX - Executable API Projects",
+  "description": "Run, inspect, and test executable .apix API project files directly inside VS Code",
+  "version": "1.0.0",
+  "publisher": "apix",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other",
+    "Testing",
+    "Programming Languages"
+  ],
+  "activationEvents": [
+    "onLanguage:apix",
+    "workspaceContains:**/*.apix"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "apix",
+        "aliases": ["APiX API Project", "apix"],
+        "extensions": [".apix"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "apix.runRequest",
+        "title": "APiX: Run Request"
+      },
+      {
+        "command": "apix.copyCurl",
+        "title": "APiX: Copy cURL"
+      },
+      {
+        "command": "apix.openProject",
+        "title": "APiX: Open Project in Terminal"
+      }
+    ]
+  }
+}
