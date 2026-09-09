@@ -1,7 +1,13 @@
 {
   "name": "@praiseikebuwa/apix-cli",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "APiX: Universal terminal-native API exploration, testing, and automation platform",
+  "author": "Praise Ikebuwa",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/praiseikebuwa/APIX.git"
+  },
+  "homepage": "https://apix-beryl.vercel.app/",
   "publishConfig": {
     "access": "public"
   },
@@ -29,7 +35,6 @@
     "developer-tools",
     "testing"
   ],
-  "author": "",
   "license": "MIT",
   "dependencies": {
     "ajv": "^8.20.0",
