@@ -4,21 +4,33 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>APiX — The Executable Interface for Your APIs</title>
+  <title>APiX — The Executable File Format &amp; Interface for APIs</title>
+  <meta name="description" content="Connect your API. Discover its operations. Execute them from anywhere. Powered by .apix — the executable file format for APIs." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #000000;
-      --card-bg: #0a0a0a;
-      --card-border: #222222;
-      --text: #ffffff;
-      --text-muted: #888888;
-      --border: #333333;
-      --accent: #ffffff;
+      --surface-1: #09090b;
+      --surface-2: #121215;
+      --surface-3: #18181b;
+      --border-subtle: #27272a;
+      --border-hover: #3f3f46;
+      --border-active: #52525b;
+      --text: #fafafa;
+      --text-muted: #a1a1aa;
+      --text-dim: #71717a;
+      --accent-white: #ffffff;
+      --green: #22c55e;
+      --cyan: #38bdf8;
+      --yellow: #eab308;
+      --red: #ef4444;
+      --purple: #a855f7;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     * {
@@ -27,12 +39,17 @@
       padding: 0;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       background-color: var(--bg);
       color: var(--text);
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
 
     .mono {
@@ -40,19 +57,20 @@
     }
 
     .container {
-      max-width: 1100px;
+      max-width: 1160px;
       margin: 0 auto;
-      padding: 0 2rem;
+      padding: 0 1.5rem;
     }
 
     /* Header */
     header {
-      border-bottom: 1px solid var(--card-border);
-      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 1.25rem 0;
       position: sticky;
       top: 0;
       background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       z-index: 100;
     }
 
@@ -62,284 +80,1452 @@
       align-items: center;
     }
 
+    .logo-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text);
+    }
+
     .logo {
       font-size: 1.4rem;
       font-weight: 800;
       letter-spacing: -0.04em;
     }
 
+    .badge-ver {
+      font-size: 0.75rem;
+      background: var(--surface-2);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
     .nav-links a {
       color: var(--text-muted);
       text-decoration: none;
-      margin-left: 2rem;
-      font-size: 0.95rem;
-      transition: color 0.2s;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: var(--transition);
     }
 
     .nav-links a:hover {
       color: var(--text);
     }
 
+    /* Buttons */
     .btn {
-      display: inline-block;
-      background: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background: var(--accent-white);
       color: #000000;
-      padding: 0.6rem 1.4rem;
-      border-radius: 6px;
+      padding: 0.7rem 1.6rem;
+      border-radius: var(--radius-sm);
       font-weight: 600;
       text-decoration: none;
-      font-size: 0.9rem;
-      transition: background 0.2s;
+      font-size: 0.925rem;
+      cursor: pointer;
+      border: 1px solid var(--accent-white);
+      transition: var(--transition);
     }
 
     .btn:hover {
-      background: #e2e2e2;
+      background: #e4e4e7;
+      border-color: #e4e4e7;
+      transform: translateY(-1px);
     }
 
     .btn-outline {
       background: transparent;
-      color: #ffffff;
-      border: 1px solid var(--border);
+      color: var(--text);
+      border: 1px solid var(--border-subtle);
     }
 
     .btn-outline:hover {
-      border-color: #ffffff;
-      background: #111111;
+      border-color: var(--border-active);
+      background: var(--surface-2);
+      color: var(--text);
     }
 
-    /* Hero */
+    .btn-sm {
+      padding: 0.45rem 0.9rem;
+      font-size: 0.85rem;
+    }
+
+    /* Hero Section */
     .hero {
-      padding: 8rem 0 5rem;
+      padding: 5rem 0 3rem;
       text-align: center;
     }
 
-    .hero h1 {
-      font-size: 4rem;
-      font-weight: 800;
-      letter-spacing: -0.05em;
-      line-height: 1.1;
-      margin-bottom: 1.5rem;
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--surface-1);
+      border: 1px solid var(--border-subtle);
+      padding: 0.4rem 1rem;
+      border-radius: 999px;
+      font-size: 0.825rem;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
     }
 
-    .hero p {
-      font-size: 1.3rem;
+    .hero-badge span.dot-green {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      display: inline-block;
+      box-shadow: 0 0 8px var(--green);
+    }
+
+    .hero h1 {
+      font-size: clamp(2.75rem, 6vw, 4.75rem);
+      font-weight: 800;
+      letter-spacing: -0.05em;
+      line-height: 1.08;
+      margin-bottom: 1.5rem;
+      color: #ffffff;
+    }
+
+    .hero p.lead {
+      font-size: clamp(1.15rem, 2vw, 1.35rem);
       color: var(--text-muted);
-      max-width: 680px;
-      margin: 0 auto 2.5rem;
+      max-width: 760px;
+      margin: 0 auto 1.5rem;
       font-weight: 400;
     }
 
-    /* Terminal Preview */
-    .terminal {
-      background: #050505;
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
+    .hero p.discovery-note {
+      font-size: 0.9rem;
+      color: var(--text-dim);
+      max-width: 680px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 3.5rem;
+    }
+
+    /* Hero Animated Terminal */
+    .hero-terminal {
+      background: #000000;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
       overflow: hidden;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
-      max-width: 850px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 1px rgba(255, 255, 255, 0.15);
+      max-width: 880px;
       margin: 0 auto 6rem;
       text-align: left;
     }
 
     .terminal-header {
-      background: #111111;
-      padding: 0.75rem 1rem;
-      border-bottom: 1px solid var(--card-border);
+      background: var(--surface-1);
+      padding: 0.8rem 1.25rem;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .terminal-dots {
       display: flex;
       gap: 8px;
     }
 
-    .dot {
+    .terminal-dots div {
       width: 12px;
       height: 12px;
       border-radius: 50%;
-      background: #333333;
+    }
+
+    .dot-red { background: #ef4444; }
+    .dot-yellow { background: #eab308; }
+    .dot-green { background: #22c55e; }
+
+    .terminal-title {
+      font-size: 0.8rem;
+      color: var(--text-dim);
     }
 
     .terminal-body {
-      padding: 1.5rem;
-      font-size: 0.95rem;
-      line-height: 1.8;
-      color: #cccccc;
+      padding: 1.75rem;
+      font-size: 0.925rem;
+      line-height: 1.75;
+      min-height: 320px;
+      color: #e4e4e7;
     }
 
-    .prompt {
-      color: #888888;
+    .t-prompt { color: var(--text-dim); margin-right: 0.5rem; }
+    .t-cmd { color: #ffffff; font-weight: 600; }
+    .t-green { color: var(--green); }
+    .t-cyan { color: var(--cyan); }
+    .t-yellow { color: var(--yellow); }
+    .t-red { color: var(--red); }
+    .t-dim { color: var(--text-dim); }
+    .t-bold { font-weight: 700; color: #ffffff; }
+
+    /* Section Typography */
+    .section-title {
+      text-align: center;
+      margin-bottom: 3.5rem;
     }
 
-    .command {
-      color: #ffffff;
+    .section-title span.tagline {
+      font-size: 0.825rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-dim);
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .section-title h2 {
+      font-size: clamp(2rem, 4vw, 2.75rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    /* .apix Major Feature Section */
+    .apix-section {
+      margin-bottom: 7rem;
+    }
+
+    .apix-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    @media (max-width: 900px) {
+      .apix-grid { grid-template-columns: 1fr; }
+    }
+
+    .apix-badge {
+      display: inline-block;
+      background: var(--surface-2);
+      border: 1px solid var(--border-subtle);
+      color: var(--cyan);
+      font-size: 0.825rem;
+      padding: 0.3rem 0.75rem;
+      border-radius: var(--radius-sm);
+      margin-bottom: 1.25rem;
       font-weight: 600;
     }
 
-    .green {
-      color: #22c55e;
+    .apix-info h2 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      margin-bottom: 1rem;
+      line-height: 1.15;
     }
 
-    .cyan {
-      color: #38bdf8;
+    .apix-info p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      line-height: 1.7;
+      margin-bottom: 2rem;
     }
 
-    .gray {
-      color: #666666;
+    .apix-points {
+      list-style: none;
+      margin-bottom: 2rem;
     }
 
-    /* Grid */
-    .features {
+    .apix-points li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      color: var(--text);
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+    }
+
+    .apix-points li span.icon {
+      color: var(--green);
+      font-weight: 700;
+      margin-top: 0.1rem;
+    }
+
+    .yaml-preview-window {
+      background: var(--surface-1);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+    }
+
+    .yaml-header {
+      background: var(--surface-2);
+      padding: 0.75rem 1.25rem;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .yaml-body {
+      padding: 1.5rem;
+      font-size: 0.875rem;
+      line-height: 1.75;
+      color: var(--text);
+      background: #000000;
+    }
+
+    /* Three Surfaces Architecture Section */
+    .surfaces-section {
+      margin-bottom: 7rem;
+      background: var(--surface-1);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 4rem 2.5rem;
+    }
+
+    .surfaces-diagram {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 2rem;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 3.5rem;
+      position: relative;
+    }
+
+    @media (max-width: 850px) {
+      .surfaces-diagram { grid-template-columns: 1fr; }
+    }
+
+    .surface-card {
+      background: #000000;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      transition: var(--transition);
+    }
+
+    .surface-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-3px);
+    }
+
+    .surface-tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.75rem;
+    }
+
+    .surface-card h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .surface-card code.cmd {
+      display: inline-block;
+      background: var(--surface-2);
+      border: 1px solid var(--border-subtle);
+      color: var(--cyan);
+      font-size: 0.85rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-sm);
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    .surface-card p {
+      color: var(--text-muted);
+      font-size: 0.925rem;
+      line-height: 1.6;
+    }
+
+    /* Comparison Table Section ("Why APiX?") */
+    .why-section {
+      margin-bottom: 7rem;
+    }
+
+    .comparison-table-wrapper {
+      background: var(--surface-1);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      overflow-x: auto;
+    }
+
+    .comp-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.925rem;
+    }
+
+    .comp-table th {
+      padding: 1.25rem 1.5rem;
+      font-weight: 700;
+      background: var(--surface-2);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .comp-table th.col-trad {
+      color: var(--text-dim);
+    }
+
+    .comp-table th.col-apix {
+      color: #ffffff;
+      background: var(--surface-3);
+    }
+
+    .comp-table td {
+      padding: 1.1rem 1.5rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .comp-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .comp-table td.cell-metric {
+      font-weight: 600;
+      color: var(--text-muted);
+      width: 25%;
+    }
+
+    .comp-table td.cell-trad {
+      color: var(--text-dim);
+      width: 37.5%;
+    }
+
+    .comp-table td.cell-apix {
+      color: var(--text);
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.02);
+      width: 37.5%;
+    }
+
+    .comp-table td.cell-apix span.highlight {
+      color: var(--green);
+      margin-right: 0.4rem;
+    }
+
+    /* Interactive Demo Lifecycle Section */
+    .interactive-demo-section {
+      margin-bottom: 7rem;
+    }
+
+    .flow-stepper {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      overflow-x: auto;
+    }
+
+    .step-btn {
+      flex: 1;
+      background: var(--surface-1);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      padding: 0.8rem 1rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      cursor: pointer;
+      text-align: left;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .step-btn:hover {
+      background: var(--surface-2);
+      color: var(--text);
+    }
+
+    .step-btn.active {
+      background: var(--surface-2);
+      border-color: var(--border-active);
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    .step-btn span.num {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--surface-3);
+      text-align: center;
+      line-height: 20px;
+      font-size: 0.75rem;
+      margin-right: 0.5rem;
+      color: var(--text-dim);
+    }
+
+    .step-btn.active span.num {
+      background: var(--accent-white);
+      color: #000000;
+      font-weight: 800;
+    }
+
+    .demo-output-window {
+      background: #000000;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      min-height: 380px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+    }
+
+    .demo-output-body {
+      padding: 1.75rem;
+      font-size: 0.925rem;
+      line-height: 1.7;
+    }
+
+    /* Features Grid */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 7rem;
+    }
+
+    .feature-card {
+      background: var(--surface-1);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 2rem;
+      transition: var(--transition);
+    }
+
+    .feature-card:hover {
+      border-color: var(--border-hover);
+      background: var(--surface-2);
+      transform: translateY(-2px);
+    }
+
+    .feature-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      background: var(--surface-2);
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .feature-card h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+    }
+
+    .feature-card p {
+      color: var(--text-muted);
+      font-size: 0.925rem;
+      line-height: 1.6;
+      margin-bottom: 1.25rem;
+    }
+
+    .feature-code {
+      background: #000000;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 0.5rem 0.75rem;
+      font-size: 0.825rem;
+      color: var(--cyan);
+    }
+
+    /* Code Generator Section */
+    .codegen-section {
+      margin-bottom: 7rem;
+      background: var(--surface-1);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 3rem 2.5rem;
+    }
+
+    .lang-tabs {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 1rem;
+    }
+
+    .lang-tab {
+      background: transparent;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      padding: 0.4rem 0.9rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .lang-tab:hover {
+      color: var(--text);
+      background: var(--surface-2);
+    }
+
+    .lang-tab.active {
+      background: var(--accent-white);
+      color: #000000;
+      border-color: var(--accent-white);
+      font-weight: 600;
+    }
+
+    .code-display {
+      background: #000000;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      position: relative;
+    }
+
+    .code-display pre {
+      font-size: 0.9rem;
+      line-height: 1.75;
+      color: var(--text);
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .copy-code-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: var(--surface-2);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .copy-code-btn:hover {
+      color: var(--text);
+      border-color: var(--border-hover);
+    }
+
+    /* CLI Reference Table */
+    .commands-section {
+      margin-bottom: 7rem;
+    }
+
+    .table-container {
+      background: var(--surface-1);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    th {
+      background: var(--surface-2);
+      padding: 1rem 1.25rem;
+      color: var(--text);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    td {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    td code {
+      color: var(--cyan);
+      font-weight: 600;
+    }
+
+    /* Bottom CTA Banner */
+    .cta-banner {
+      background: linear-gradient(180deg, var(--surface-1) 0%, var(--surface-2) 100%);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 4.5rem 2rem;
+      text-align: center;
       margin-bottom: 6rem;
     }
 
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 2rem;
+    .cta-banner h2 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      margin-bottom: 1rem;
     }
 
-    .card h3 {
-      font-size: 1.25rem;
-      font-weight: 700;
-      margin-bottom: 0.75rem;
-      letter-spacing: -0.02em;
-    }
-
-    .card p {
+    .cta-banner p {
       color: var(--text-muted);
-      font-size: 0.95rem;
+      font-size: 1.15rem;
+      max-width: 600px;
+      margin: 0 auto 2.5rem;
+    }
+
+    /* Copy Install Pill */
+    .install-pill {
+      display: inline-flex;
+      align-items: center;
+      background: #000000;
+      border: 1px solid var(--border-subtle);
+      padding: 0.5rem 0.6rem 0.5rem 1.25rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.925rem;
+    }
+
+    .install-pill span.cmd-text {
+      color: #ffffff;
+      font-weight: 600;
+      margin-right: 1.25rem;
     }
 
     /* Footer */
     footer {
-      border-top: 1px solid var(--card-border);
-      padding: 3rem 0;
-      text-align: center;
+      border-top: 1px solid var(--border-subtle);
+      padding: 3.5rem 0;
       color: var(--text-muted);
       font-size: 0.9rem;
+    }
+
+    .footer-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      margin-left: 1.5rem;
+      transition: var(--transition);
+    }
+
+    .footer-links a:hover {
+      color: var(--text);
     }
   </style>
 </head>
 
 <body>
+  <!-- Header -->
   <header>
     <div class="container nav">
-      <div class="logo mono">APiX</div>
-      <div class="nav-links">
-        <a href="#features">Features</a>
+      <a href="#" class="logo-group">
+        <span class="logo mono">APiX</span>
+        <span class="badge-ver mono">v1.0.2</span>
+      </a>
+      <nav class="nav-links">
         <a href="#apix-format">.apix Format</a>
-        <a href="#docs">Docs</a>
-        <a href="https://github.com" class="btn" style="margin-left: 2rem;">Get APiX</a>
-      </div>
+        <a href="#surfaces">3 Surfaces</a>
+        <a href="#why">Why APiX</a>
+        <a href="#demo">Interactive Demo</a>
+        <a href="#features">Features</a>
+        <a href="#codegen">Code Generator</a>
+        <a href="https://github.com" target="_blank" class="btn btn-sm">GitHub</a>
+      </nav>
     </div>
   </header>
 
   <main>
+    <!-- HERO SECTION -->
     <section class="hero">
       <div class="container">
+        <div class="hero-badge">
+          <span class="dot-green"></span>
+          <span>Terminal-Native API Exploration &amp; Execution Platform</span>
+        </div>
+        
         <h1>APIs should be executable.</h1>
-        <p>Connect any API, discover what it can do, generate commands, and execute operations directly from your
-          terminal or editor.</p>
-        <div>
-          <a href="#docs" class="btn" style="margin-right: 1rem;">Install CLI</a>
-          <a href="#apix-format" class="btn btn-outline">Explore .apix Format</a>
+        <p class="lead">Connect your API. Discover its operations. Execute them from anywhere.</p>
+        <p class="discovery-note">APiX automatically uses OpenAPI specifications when available and safe probing mechanisms when they aren't.</p>
+
+        <div class="hero-actions">
+          <div class="install-pill mono">
+            <span class="t-prompt">$</span>
+            <span class="cmd-text">npm install -g @praiseikebuwa/apix-cli</span>
+            <button class="btn btn-sm" onclick="copyInstallCmd(this)">Copy</button>
+          </div>
+          <a href="#demo" class="btn btn-outline">Try APiX Interactive Demo</a>
+        </div>
+
+        <!-- Animated Terminal in Hero -->
+        <div class="hero-terminal">
+          <div class="terminal-header">
+            <div class="terminal-dots">
+              <div class="dot-red"></div>
+              <div class="dot-yellow"></div>
+              <div class="dot-green"></div>
+            </div>
+            <div class="terminal-title mono">apix connect https://api.example.com</div>
+          </div>
+          <div class="terminal-body mono" id="heroTerminalBody">
+            <div><span class="t-prompt">$</span> <span class="t-cmd">apix connect https://api.example.com</span></div>
+            <div class="t-green">✓ Connected to API (api.example.com)</div>
+            <div class="t-green">✓ OpenAPI 3.1 specification detected (84 endpoints)</div>
+            <div class="t-dim">──────────────────────────────────────────────────────────</div>
+            <div class="t-bold" style="color: var(--cyan)">USERS</div>
+            <div>├── <span class="t-green">GET   </span> /users</div>
+            <div>├── <span class="t-cyan">POST  </span> /users</div>
+            <div>├── <span class="t-green">GET   </span> /users/:id</div>
+            <div>└── <span class="t-red">DELETE</span> /users/:id</div>
+            <br>
+            <div class="t-bold" style="color: var(--cyan)">PAYMENTS</div>
+            <div>├── <span class="t-green">GET   </span> /payments</div>
+            <div>└── <span class="t-cyan">POST  </span> /payments</div>
+          </div>
         </div>
       </div>
     </section>
 
-    <div class="container">
-      <div class="terminal">
-        <div class="terminal-header">
-          <div class="dot"></div>
-          <div class="dot"></div>
-          <div class="dot"></div>
-        </div>
-        <div class="terminal-body mono">
-          <div><span class="prompt">$</span> <span class="command">apix connect http://localhost:4000</span></div>
-          <div class="green">✓ Connected to gas API (localhost:4000)</div>
-          <div class="green">✓ OpenAPI 3.1 specification detected (47 endpoints)</div>
-          <div class="gray">──────────────────────────────────────────────────</div>
-          <div><span class="cyan">❯ GET /users</span> <span class="gray">List all users</span></div>
-          <div> GET /users/:id <span class="gray">Retrieve user by ID</span></div>
-          <div> POST /users <span class="gray">Create a new user</span></div>
-          <div> DELETE /users/:id <span class="gray">Delete user</span></div>
-          <div class="gray">──────────────────────────────────────────────────</div>
-          <div>Press <span class="cyan">Enter</span> to build request │ <span class="cyan">Ctrl+P</span> for Command
-            Palette</div>
-        </div>
-      </div>
+    <!-- SECTION 2: .APIX FORMAT -->
+    <section id="apix-format" class="container apix-section">
+      <div class="apix-grid">
+        <div class="apix-info">
+          <span class="apix-badge mono">MAJOR FEATURE</span>
+          <h2>The file format for executable APIs.</h2>
+          <p>Instead of locking requests inside desktop GUI databases or pasting untracked cURL commands, APiX introduces <code>.apix</code> — a single version-controlled file format for your API's entire lifecycle.</p>
 
-      <section id="features" class="features">
-        <div class="card">
-          <h3>Terminal-Native TUI</h3>
-          <p>Built with React &amp; Ink. Features socket-level DNS/TLS metrics, interactive parameter editors, pretty
-            JSON viewers, and production safety guards.</p>
-        </div>
-        <div class="card">
-          <h3>.apix Project Format</h3>
-          <p>A single human-readable YAML file containing API endpoints, environments, auth profiles, saved requests,
-            workflows, and contract assertions.</p>
-        </div>
-        <div class="card">
-          <h3>10-Language Generator</h3>
-          <p>Instantly converts any discovered operation into syntactically valid code snippets for cURL, JavaScript,
-            TypeScript, Python, Go, Rust, and more.</p>
-        </div>
-        <div class="card">
-          <h3>VS Code &amp; CI Integration</h3>
-          <p>Execute requests directly inside VS Code with CodeLens <code>▶ Run Request</code> or automate API contract
-            testing in GitHub Actions with <code>apix test --ci</code>.</p>
-        </div>
-      </section>
+          <ul class="apix-points">
+            <li><span class="icon">✓</span> <strong>Git Version-Controlled:</strong> Commit <code>api.apix</code> alongside your source code.</li>
+            <li><span class="icon">✓</span> <strong>Inline Environments:</strong> Map local, staging, and production base URLs seamlessly.</li>
+            <li><span class="icon">✓</span> <strong>Executable Workflows:</strong> Chain responses (e.g. auth tokens) into subsequent requests.</li>
+            <li><span class="icon">✓</span> <strong>Built-in Assertions:</strong> Automated contract tests and JSONPath validations.</li>
+          </ul>
 
-      <section id="apix-format" style="margin-bottom: 6rem;">
-        <div class="card" style="padding: 3rem;">
-          <h2 style="font-size: 2rem; font-weight: 800; margin-bottom: 1rem;">Introduce .apix</h2>
-          <p style="color: var(--text-muted); margin-bottom: 2rem; max-width: 600px;">
-            One version-controlled file for your entire API lifecycle. Commit <code>api.apix</code> to Git to share
-            workflows, tests, and requests across your development team.
-          </p>
-          <div class="terminal" style="margin: 0;">
-            <div class="terminal-body mono" style="background: #000000; font-size: 0.9rem;">
-              <span class="gray"># api.apix</span>
-              version: 1
-              name: gas API
-              baseUrl: "{{baseUrl}}"
+          <a href="#demo" class="btn">Explore .apix Workflows</a>
+        </div>
 
-              environments:
-              development:
-              baseUrl: "http://localhost:4000"
-
-              requests:
-              - name: List Users
-              method: GET
-              path: /users
-              tests:
-              - expect:
-              status: 200
+        <div class="yaml-preview-window">
+          <div class="yaml-header mono">
+            <div class="terminal-dots">
+              <div class="dot-red"></div>
+              <div class="dot-yellow"></div>
+              <div class="dot-green"></div>
             </div>
+            <div style="font-size: 0.8rem;" class="t-dim">Homely.apix</div>
+          </div>
+          <div class="yaml-body mono">
+            <span class="t-dim"># Homely API Specification</span><br>
+            <span class="t-cyan">name:</span> Homely API<br>
+            <span class="t-cyan">environment:</span> development<br><br>
+
+            <span class="t-cyan">environments:</span><br>
+            &nbsp;&nbsp;<span class="t-yellow">development:</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="t-cyan">baseUrl:</span> "http://localhost:4000"<br>
+            &nbsp;&nbsp;<span class="t-yellow">production:</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="t-cyan">baseUrl:</span> "https://api.homely.com"<br><br>
+
+            <span class="t-cyan">request:</span><br>
+            &nbsp;&nbsp;<span class="t-cyan">name:</span> Create Booking<br>
+            &nbsp;&nbsp;<span class="t-cyan">method:</span> POST<br>
+            &nbsp;&nbsp;<span class="t-cyan">path:</span> /bookings<br>
+            &nbsp;&nbsp;<span class="t-cyan">body:</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="t-cyan">serviceId:</span> "{{serviceId}}"<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="t-cyan">customerId:</span> "{{customerId}}"<br>
+            &nbsp;&nbsp;<span class="t-cyan">tests:</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;- <span class="t-cyan">expect:</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="t-cyan">status:</span> 201
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section id="docs" style="margin-bottom: 8rem; text-align: center;">
-        <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem;">Get Started in Seconds</h2>
-        <p style="color: var(--text-muted); margin-bottom: 2rem;">Install APiX via npm and start exploring APIs
-          immediately.</p>
-        <div class="terminal mono"
-          style="max-width: 500px; margin: 0 auto; text-align: center; padding: 1.5rem; background: #000;">
-          <span class="prompt">$</span> <span class="command">npm install -g apix-cli</span>
+    <!-- SECTION 3: THREE SURFACES ARCHITECTURE -->
+    <section id="surfaces" class="container">
+      <div class="surfaces-section">
+        <div class="section-title">
+          <span class="tagline mono">UNIFIED PLATFORM</span>
+          <h2>One API project. Everywhere.</h2>
+          <p>Your <code>.apix</code> project file powers your entire development lifecycle across three native surfaces.</p>
         </div>
-      </section>
-    </div>
+
+        <div class="surfaces-diagram mono">
+          <div class="surface-card">
+            <span class="surface-tag">SURFACE 1</span>
+            <h3>Terminal CLI</h3>
+            <code class="cmd">apix connect</code>
+            <p>Interactive TUI exploration, safe probing, load benchmarking, natural language control, and mock server generation.</p>
+          </div>
+
+          <div class="surface-card">
+            <span class="surface-tag">SURFACE 2</span>
+            <h3>VS Code Extension</h3>
+            <code class="cmd">▶ Run Request</code>
+            <p>Inline CodeLens execution directly inside <code>.apix</code> files. Test requests without leaving your code editor.</p>
+          </div>
+
+          <div class="surface-card">
+            <span class="surface-tag">SURFACE 3</span>
+            <h3>CI/CD Automation</h3>
+            <code class="cmd">apix test --ci</code>
+            <p>Automate API contract verification and response assertion workflows in GitHub Actions and deployment pipelines.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: WHY APIX? COMPARISON TABLE -->
+    <section id="why" class="container why-section">
+      <div class="section-title">
+        <span class="tagline mono">PARADIGM SHIFT</span>
+        <h2>Why APiX?</h2>
+        <p>A modern developer tool built for speed, version control, and terminal-native execution.</p>
+      </div>
+
+      <div class="comparison-table-wrapper mono">
+        <table class="comp-table">
+          <thead>
+            <tr>
+              <th class="col-metric">Dimension</th>
+              <th class="col-trad">Traditional API Tools (Postman / Insomnia)</th>
+              <th class="col-apix">APiX Platform</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="cell-metric">Primary Surface</td>
+              <td class="cell-trad">GUI-first desktop application</td>
+              <td class="cell-apix"><span class="highlight">✓</span> Terminal-first &amp; editor-native</td>
+            </tr>
+            <tr>
+              <td class="cell-metric">Request Storage</td>
+              <td class="cell-trad">Proprietary cloud or heavy JSON exports</td>
+              <td class="cell-apix"><span class="highlight">✓</span> Git-committed <code>.apix</code> files</td>
+            </tr>
+            <tr>
+              <td class="cell-metric">Environments</td>
+              <td class="cell-trad">Separate desktop app configurations</td>
+              <td class="cell-apix"><span class="highlight">✓</span> Inline <code>.apix</code> environments</td>
+            </tr>
+            <tr>
+              <td class="cell-metric">Testing Mode</td>
+              <td class="cell-trad">Manual click-based testing</td>
+              <td class="cell-apix"><span class="highlight">✓</span> Executable automated workflows</td>
+            </tr>
+            <tr>
+              <td class="cell-metric">Core Vision</td>
+              <td class="cell-trad">API client application</td>
+              <td class="cell-apix"><span class="highlight">✓</span> Unified API development layer</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION 5: INTERACTIVE DEMO LIFECYCLE -->
+    <section id="demo" class="container interactive-demo-section">
+      <div class="section-title">
+        <span class="tagline mono">SIMULATED PLAYGROUND</span>
+        <h2>Interactive Product Simulator</h2>
+        <p>Experience the complete APiX execution lifecycle right inside your browser.</p>
+      </div>
+
+      <div class="flow-stepper mono">
+        <button class="step-btn active" onclick="switchStep(1)"><span class="num">1</span> Connect API</button>
+        <button class="step-btn" onclick="switchStep(2)"><span class="num">2</span> Explore Endpoints</button>
+        <button class="step-btn" onclick="switchStep(3)"><span class="num">3</span> Select Endpoint</button>
+        <button class="step-btn" onclick="switchStep(4)"><span class="num">4</span> Build Request</button>
+        <button class="step-btn" onclick="switchStep(5)"><span class="num">5</span> Execute</button>
+        <button class="step-btn" onclick="switchStep(6)"><span class="num">6</span> Inspect Response</button>
+      </div>
+
+      <div class="demo-output-window">
+        <div class="terminal-header mono">
+          <div class="terminal-dots">
+            <div class="dot-red"></div>
+            <div class="dot-yellow"></div>
+            <div class="dot-green"></div>
+          </div>
+          <div class="terminal-title" id="stepTitle">Step 1: Connect API</div>
+        </div>
+        <div class="demo-output-body mono" id="stepOutput">
+          <!-- Step 1 content preloaded -->
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 6: FEATURES GRID -->
+    <section id="features" class="container">
+      <div class="section-title">
+        <h2>Complete Feature Suite</h2>
+        <p>Built with precision for software engineers, API architects, and DevOps teams.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🔍</div>
+          <h3>OpenAPI &amp; Probing</h3>
+          <p>Detects OpenAPI specs or uses safe network probing to infer REST endpoints, status codes, and payload schemas.</p>
+          <div class="feature-code mono">$ apix explain http://localhost:4000</div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">💬</div>
+          <h3>Natural Language Control</h3>
+          <p>Query APIs using plain English. APiX maps your intent to endpoints, URL path variables, and body parameters.</p>
+          <div class="feature-code mono">$ apix ask "get active users limit 10"</div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3>Load Benchmarking</h3>
+          <p>Measure throughput (RPS), connection setup time, TTFB, and latency distributions (P50, P95, P99).</p>
+          <div class="feature-code mono">$ apix benchmark /users -c 10 -n 200</div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">💻</div>
+          <h3>10-Language Generator</h3>
+          <p>Instantly convert any operation into syntactically valid code snippets for cURL, JS, TS, Python, Go, Rust, Java, C#, and Dart.</p>
+          <div class="feature-code mono">$ apix generate python /users</div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h3>GraphQL Introspection</h3>
+          <p>Introspect GraphQL endpoints, query schema definitions, inspect mutations, and execute inline GraphQL queries.</p>
+          <div class="feature-code mono">$ apix graphql http://localhost:4000/graphql</div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🛠</div>
+          <h3>Local Mock Server</h3>
+          <p>Turn any OpenAPI file or <code>.apix</code> project file into a local mock server with realistic sample data.</p>
+          <div class="feature-code mono">$ apix mock api.apix --port 5050</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 7: CODE GENERATOR WIDGET -->
+    <section id="codegen" class="container codegen-section">
+      <div class="section-title" style="margin-bottom: 2rem;">
+        <h2>Multi-Language Code Generator</h2>
+        <p>Generate exact HTTP request code for 10 languages instantly.</p>
+      </div>
+
+      <div class="lang-tabs mono">
+        <button class="lang-tab active" onclick="switchLang('curl')">cURL</button>
+        <button class="lang-tab" onclick="switchLang('typescript')">TypeScript</button>
+        <button class="lang-tab" onclick="switchLang('javascript')">JavaScript</button>
+        <button class="lang-tab" onclick="switchLang('python')">Python</button>
+        <button class="lang-tab" onclick="switchLang('go')">Go</button>
+        <button class="lang-tab" onclick="switchLang('rust')">Rust</button>
+        <button class="lang-tab" onclick="switchLang('java')">Java</button>
+        <button class="lang-tab" onclick="switchLang('csharp')">C#</button>
+        <button class="lang-tab" onclick="switchLang('dart')">Dart</button>
+        <button class="lang-tab" onclick="switchLang('php')">PHP</button>
+      </div>
+
+      <div class="code-display">
+        <button class="copy-code-btn mono" onclick="copyCode(this)">Copy Code</button>
+        <pre class="mono" id="codeContainer"></pre>
+      </div>
+    </section>
+
+    <!-- CLI REFERENCE TABLE -->
+    <section class="container commands-section">
+      <div class="section-title">
+        <h2>CLI Command Reference</h2>
+        <p>Complete guide to APiX commands and flags.</p>
+      </div>
+
+      <div class="table-container mono">
+        <table>
+          <thead>
+            <tr>
+              <th>Command</th>
+              <th>Description</th>
+              <th>Options / Flags</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>apix [url]</code></td>
+              <td>Launch interactive TUI explorer against URL or .apix file</td>
+              <td><code>--openapi &lt;file&gt;</code>, <code>--insecure</code></td>
+            </tr>
+            <tr>
+              <td><code>apix explain [url]</code></td>
+              <td>Generate complete API analysis report (resources, health, issues)</td>
+              <td><code>--url &lt;url&gt;</code></td>
+            </tr>
+            <tr>
+              <td><code>apix ask "&lt;query&gt;"</code></td>
+              <td>Execute request constructed via natural language AI mapping</td>
+              <td><code>--url &lt;url&gt;</code>, <code>--force</code></td>
+            </tr>
+            <tr>
+              <td><code>apix benchmark &lt;endpoint&gt;</code></td>
+              <td>Run high-throughput latency and RPS benchmarking</td>
+              <td><code>-X GET</code>, <code>-n 100</code>, <code>-c 5</code>, <code>--force</code></td>
+            </tr>
+            <tr>
+              <td><code>apix graphql &lt;url&gt;</code></td>
+              <td>Introspect GraphQL schemas and run inline GraphQL queries</td>
+              <td><code>-q "&lt;query&gt;"</code></td>
+            </tr>
+            <tr>
+              <td><code>apix mock &lt;spec&gt;</code></td>
+              <td>Start a local mock server with generated example payloads</td>
+              <td><code>-p 5050</code></td>
+            </tr>
+            <tr>
+              <td><code>apix diff &lt;specA&gt; &lt;specB&gt;</code></td>
+              <td>Compare two OpenAPI specs and highlight breaking changes</td>
+              <td><code>--json</code></td>
+            </tr>
+            <tr>
+              <td><code>apix quality [target]</code></td>
+              <td>Score API documentation, schema, and error response coverage</td>
+              <td><code>--target &lt;url&gt;</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- BOTTOM CTA BANNER -->
+    <section class="container">
+      <div class="cta-banner">
+        <h2>Start Exploring APIs Faster</h2>
+        <p>Install APiX CLI in seconds and take full control over your API workflows.</p>
+        <div class="hero-actions">
+          <div class="install-pill mono">
+            <span class="t-prompt">$</span>
+            <span class="cmd-text">npm install -g @praiseikebuwa/apix-cli</span>
+            <button class="btn btn-sm" onclick="copyInstallCmd(this)">Copy</button>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
+  <!-- FOOTER -->
   <footer>
-    <div class="container mono">
-      APiX — Local-First Executable API Platform · MIT License
+    <div class="container footer-flex mono">
+      <div>APiX — Local-First Executable API Platform · MIT License</div>
+      <div class="footer-links">
+        <a href="#apix-format">.apix Format</a>
+        <a href="#surfaces">3 Surfaces</a>
+        <a href="#demo">Interactive Demo</a>
+        <a href="https://github.com" target="_blank">GitHub</a>
+      </div>
     </div>
   </footer>
+
+  <!-- INTERACTIVE JAVASCRIPT -->
+  <script>
+    // Copy Install Command
+    function copyInstallCmd(btn) {
+      navigator.clipboard.writeText('npm install -g @praiseikebuwa/apix-cli');
+      const originalText = btn.innerText;
+      btn.innerText = 'Copied!';
+      setTimeout(() => { btn.innerText = originalText; }, 2000);
+    }
+
+    // Step Simulator Data
+    const steps = {
+      1: {
+        title: "Step 1: Connect API",
+        content: `<div><span class="t-prompt">$</span> <span class="t-cmd">apix connect http://localhost:4000</span></div>
+<div class="t-dim">Connecting to target API at http://localhost:4000...</div>
+<div class="t-green">✓ Network socket reachable (3ms latency)</div>
+<div class="t-green">✓ OpenAPI 3.1 specification detected</div>
+<div class="t-cyan">Discovered 47 endpoints across 6 resource tags</div><br>
+<div class="t-yellow">Press [Next Step] or click 'Explore Endpoints' above</div>`
+      },
+      2: {
+        title: "Step 2: Explore Endpoints",
+        content: `<div class="t-green">● CONNECTED Discovered API (localhost:4000)                    Env: [local]</div>
+<div class="t-dim">│ Endpoints: 47 │ Schemas: 12 │ Source: OPENAPI_SPEC                              │</div>
+<div class="t-dim">╰──────────────────────────────────────────────────────────────────────────────────╯</div><br>
+<div><span class="t-cyan">❯ GET    /users          </span> <span class="t-dim">List all registered users</span></div>
+<div>  POST   /users          <span class="t-dim">Create a new user account</span></div>
+<div>  GET    /users/:id      <span class="t-dim">Retrieve user profile by ID</span></div>
+<div>  POST   /bookings       <span class="t-dim">Create a new booking reservation</span></div>
+<div>  GET    /payments       <span class="t-dim">List payment transactions</span></div>`
+      },
+      3: {
+        title: "Step 3: Select Endpoint",
+        content: `<div class="t-cyan">┌──────────────────────────────────────────────────────────────────────────────────┐</div>
+<div class="t-cyan">│ <span class="t-bold">POST /bookings</span>                                                Source: OPENAPI    │</div>
+<div class="t-cyan">└──────────────────────────────────────────────────────────────────────────────────┘</div><br>
+<div><span class="t-cyan">Parameters (0):</span> <span class="t-dim">None required</span></div><br>
+<div><span class="t-cyan">Request Body (application/json):</span></div>
+<div class="t-green">  { "serviceId": "srv_99", "customerId": "cust_42" }</div><br>
+<div><span class="t-cyan">Responses:</span></div>
+<div>  <span class="t-green">[201]</span> Created (Reservation successfully created)</div>`
+      },
+      4: {
+        title: "Step 4: Build Request",
+        content: `<div class="t-yellow">┌──────────────────────────────────────────────────────────────────────────────────┐</div>
+<div class="t-yellow">│ <span class="t-bold">APiX Interactive Request Builder</span>                              Screen: BUILDER    │</div>
+<div class="t-yellow">└──────────────────────────────────────────────────────────────────────────────────┘</div><br>
+<div><span class="t-bold">Method:</span>  <span class="t-cyan">POST</span></div>
+<div><span class="t-bold">URL:</span>     http://localhost:4000/bookings</div>
+<div><span class="t-bold">Header:</span>  Authorization: Bearer dev_token_xyz</div><br>
+<div><span class="t-bold">Body (JSON Payload):</span></div>
+<div class="t-green">  {</div>
+<div class="t-green">    "serviceId": "srv_102",</div>
+<div class="t-green">    "customerId": "usr_9981"</div>
+<div class="t-green">  }</div>`
+      },
+      5: {
+        title: "Step 5: Execute Request",
+        content: `<div><span class="t-prompt">$</span> <span class="t-cmd">Sending POST http://localhost:4000/bookings...</span></div>
+<div class="t-dim">DNS: 1ms │ TCP: 2ms │ TLS: 0ms │ TTFB: 11ms │ Total: 14ms</div><br>
+<div class="t-green" style="font-size: 1.1rem; font-weight: 700;">HTTP 201 Created</div>
+<div class="t-dim">Content-Type: application/json</div>
+<div class="t-dim">Date: Wed, 09 Sep 2026 01:25:00 GMT</div>`
+      },
+      6: {
+        title: "Step 6: Inspect Response",
+        content: `<div class="t-green">{</div>
+<div class="t-green">  "status": "success",</div>
+<div class="t-green">  "booking": {</div>
+<div class="t-green">    "id": "bk_88712",</div>
+<div class="t-green">    "serviceId": "srv_102",</div>
+<div class="t-green">    "customerId": "usr_9981",</div>
+<div class="t-green">    "status": "confirmed",</div>
+<div class="t-green">    "createdAt": "2026-09-09T01:25:00.000Z"</div>
+<div class="t-green">  }</div>
+<div class="t-green">}</div>`
+      }
+    };
+
+    function switchStep(num) {
+      document.querySelectorAll('.step-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById('stepTitle').innerText = steps[num].title;
+      document.getElementById('stepOutput').innerHTML = steps[num].content;
+    }
+
+    // Code Snippets
+    const codeSnippets = {
+      curl: `curl -X POST "http://localhost:4000/bookings" \\
+  -H "Content-Type: application/json" \\
+  -H "Authorization: Bearer dev_token_xyz" \\
+  -d '{"serviceId": "srv_102", "customerId": "usr_9981"}'`,
+
+      typescript: `import axios from 'axios';
+
+interface BookingRequest { serviceId: string; customerId: string; }
+interface BookingResponse { id: string; status: string; }
+
+async function createBooking(): Promise<BookingResponse> {
+  const { data } = await axios.post<BookingResponse>(
+    'http://localhost:4000/bookings',
+    { serviceId: 'srv_102', customerId: 'usr_9981' },
+    { headers: { Authorization: 'Bearer dev_token_xyz' } }
+  );
+  return data;
+}`,
+
+      javascript: `const response = await fetch('http://localhost:4000/bookings', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer dev_token_xyz'
+  },
+  body: JSON.stringify({ serviceId: 'srv_102', customerId: 'usr_9981' })
+});
+const data = await response.json();`,
+
+      python: `import requests
+
+url = "http://localhost:4000/bookings"
+headers = {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer dev_token_xyz"
+}
+payload = {"serviceId": "srv_102", "customerId": "usr_9981"}
+
+response = requests.post(url, json=payload, headers=headers)
+print(response.json())`,
+
+      go: `package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"net/http"
+)
+
+func main() {
+	body, _ := json.Marshal(map[string]string{
+		"serviceId":  "srv_102",
+		"customerId": "usr_9981",
+	})
+
+	req, _ := http.NewRequest("POST", "http://localhost:4000/bookings", bytes.NewBuffer(body))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer dev_token_xyz")
+
+	client := &http.Client{}
+	resp, _ := client.Do(req)
+	defer resp.Body.Close()
+	fmt.Println("Status:", resp.Status)
+}`,
+
+      rust: `use reqwest::header::{AUTHORIZATION, CONTENT_TYPE};
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let client = reqwest::Client::new();
+    let res = client.post("http://localhost:4000/bookings")
+        .header(CONTENT_TYPE, "application/json")
+        .header(AUTHORIZATION, "Bearer dev_token_xyz")
+        .json(&serde_json::json!({
+            "serviceId": "srv_102",
+            "customerId": "usr_9981"
+        }))
+        .send()
+        .await?;
+
+    println!("Status: {}", res.status());
+    Ok(())
+}`,
+
+      java: `import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        HttpClient client = HttpClient.newHttpClient();
+        String json = "{\\"serviceId\\": \\"srv_102\\", \\"customerId\\": \\"usr_9981\\"}";
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:4000/bookings"))
+                .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer dev_token_xyz")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        System.out.println(response.body());
+    }
+}`,
+
+      csharp: `using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+
+class Program {
+    static async Task Main() {
+        using var client = new HttpClient();
+        client.DefaultRequestHeaders.Add("Authorization", "Bearer dev_token_xyz");
+        var json = "{\\"serviceId\\": \\"srv_102\\", \\"customerId\\": \\"usr_9981\\"}";
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+        var response = await client.PostAsync("http://localhost:4000/bookings", content);
+        var result = await response.Content.ReadAsStringAsync();
+        System.Console.WriteLine(result);
+    }
+}`,
+
+      dart: `import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+void main() async {
+  var url = Uri.parse('http://localhost:4000/bookings');
+  var response = await http.post(
+    url,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer dev_token_xyz',
+    },
+    body: jsonEncode({'serviceId': 'srv_102', 'customerId': 'usr_9981'}),
+  );
+  print('Status: \${response.statusCode}');
+}`,
+
+      php: `<?php
+$ch = curl_init('http://localhost:4000/bookings');
+$payload = json_encode(['serviceId' => 'srv_102', 'customerId' => 'usr_9981']);
+
+curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Content-Type: application/json',
+    'Authorization: Bearer dev_token_xyz'
+]);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+$response = curl_exec($ch);
+curl_close($ch);
+echo $response;`
+    };
+
+    function switchLang(lang) {
+      document.querySelectorAll('.lang-tab').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById('codeContainer').innerText = codeSnippets[lang];
+    }
+
+    function copyCode(btn) {
+      const code = document.getElementById('codeContainer').innerText;
+      navigator.clipboard.writeText(code);
+      const originalText = btn.innerText;
+      btn.innerText = 'Copied!';
+      setTimeout(() => { btn.innerText = originalText; }, 2000);
+    }
+
+    // Init defaults
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('stepOutput').innerHTML = steps[1].content;
+      document.getElementById('codeContainer').innerText = codeSnippets.curl;
+    });
+  </script>
 </body>
 
 </html>
