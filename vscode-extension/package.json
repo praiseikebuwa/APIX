@@ -1,44 +1,108 @@
 {
   "name": "apix-vscode",
   "displayName": "APiX - Executable API Projects",
-  "description": "Run, inspect, and test executable .apix API project files directly inside VS Code",
-  "version": "1.0.0",
-  "publisher": "apix",
+  "description": "Run, inspect, benchmark, and test executable .apix API project files directly inside VS Code",
+  "version": "1.0.2",
+  "publisher": "praiseikebuwa",
   "engines": {
     "vscode": "^1.85.0"
   },
   "categories": [
-    "Other",
     "Testing",
-    "Programming Languages"
+    "Programming Languages",
+    "Other"
+  ],
+  "keywords": [
+    "api",
+    "apix",
+    "rest",
+    "openapi",
+    "testing",
+    "http",
+    "curl"
   ],
   "activationEvents": [
     "onLanguage:apix",
     "workspaceContains:**/*.apix"
   ],
   "main": "./dist/extension.js",
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
   "contributes": {
     "languages": [
       {
         "id": "apix",
-        "aliases": ["APiX API Project", "apix"],
-        "extensions": [".apix"],
+        "aliases": [
+          "APiX API Project",
+          "apix"
+        ],
+        "extensions": [
+          ".apix"
+        ],
         "configuration": "./language-configuration.json"
       }
     ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "apix-sidebar",
+          "title": "APiX Explorer",
+          "icon": "$(globe)"
+        }
+      ]
+    },
+    "views": {
+      "apix-sidebar": [
+        {
+          "id": "apixExplorerView",
+          "name": "APiX Requests & Environments"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "apix.runRequest",
-        "title": "APiX: Run Request"
+        "title": "APiX: Run Request",
+        "icon": "$(play)"
+      },
+      {
+        "command": "apix.runAllRequests",
+        "title": "APiX: Run All Requests in File",
+        "icon": "$(play-all)"
       },
       {
         "command": "apix.copyCurl",
-        "title": "APiX: Copy cURL"
+        "title": "APiX: Copy cURL",
+        "icon": "$(copy)"
       },
       {
-        "command": "apix.openProject",
-        "title": "APiX: Open Project in Terminal"
+        "command": "apix.benchmark",
+        "title": "APiX: Benchmark Endpoint",
+        "icon": "$(dashboard)"
+      },
+      {
+        "command": "apix.openInTerminal",
+        "title": "APiX: Open in Terminal",
+        "icon": "$(terminal)"
+      },
+      {
+        "command": "apix.initProject",
+        "title": "APiX: Initialize New .apix File",
+        "icon": "$(new-file)"
+      },
+      {
+        "command": "apix.switchEnv",
+        "title": "APiX: Switch Environment",
+        "icon": "$(gear)"
       }
     ]
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.3.0"
   }
 }
