@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
   <title>APiX — The Executable File Format &amp; Interface for APIs</title>
   <meta name="description" content="Connect your API. Discover its operations. Execute them from anywhere. Powered by .apix — the executable file format for APIs." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -59,16 +59,16 @@
     .container {
       max-width: 1160px;
       margin: 0 auto;
-      padding: 0 1.5rem;
+      padding: 0 1.25rem;
     }
 
     /* Header */
     header {
       border-bottom: 1px solid var(--border-subtle);
-      padding: 1.25rem 0;
+      padding: 1rem 0;
       position: sticky;
       top: 0;
-      background: rgba(0, 0, 0, 0.85);
+      background: rgba(0, 0, 0, 0.88);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       z-index: 100;
@@ -78,6 +78,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      position: relative;
     }
 
     .logo-group {
@@ -89,13 +90,13 @@
     }
 
     .logo {
-      font-size: 1.4rem;
+      font-size: 1.35rem;
       font-weight: 800;
       letter-spacing: -0.04em;
     }
 
     .badge-ver {
-      font-size: 0.75rem;
+      font-size: 0.725rem;
       background: var(--surface-2);
       border: 1px solid var(--border-subtle);
       color: var(--text-muted);
@@ -106,7 +107,7 @@
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 2rem;
+      gap: 1.75rem;
     }
 
     .nav-links a {
@@ -119,6 +120,64 @@
 
     .nav-links a:hover {
       color: var(--text);
+    }
+
+    /* Mobile Toggle Button */
+    .mobile-toggle {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface-2);
+      border: 1px solid var(--border-subtle);
+      color: var(--text);
+      padding: 0.45rem 0.85rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .mobile-toggle:hover {
+      border-color: var(--border-hover);
+    }
+
+    @media (max-width: 850px) {
+      .mobile-toggle {
+        display: flex;
+      }
+
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: calc(100% + 1rem);
+        left: 0;
+        right: 0;
+        background: rgba(9, 9, 11, 0.98);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-md);
+        padding: 1.25rem;
+        gap: 1rem;
+        align-items: flex-start;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.9);
+      }
+
+      .nav-links.open {
+        display: flex;
+      }
+
+      .nav-links a {
+        font-size: 0.95rem;
+        width: 100%;
+        padding: 0.4rem 0;
+      }
+
+      .nav-links a.btn {
+        text-align: center;
+        justify-content: center;
+      }
     }
 
     /* Buttons */
@@ -191,27 +250,27 @@
     }
 
     .hero h1 {
-      font-size: clamp(2.75rem, 6vw, 4.75rem);
+      font-size: clamp(2.25rem, 6vw, 4.75rem);
       font-weight: 800;
       letter-spacing: -0.05em;
       line-height: 1.08;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
       color: #ffffff;
     }
 
     .hero p.lead {
-      font-size: clamp(1.15rem, 2vw, 1.35rem);
+      font-size: clamp(1.05rem, 2vw, 1.35rem);
       color: var(--text-muted);
       max-width: 760px;
-      margin: 0 auto 1.5rem;
+      margin: 0 auto 1.25rem;
       font-weight: 400;
     }
 
     .hero p.discovery-note {
-      font-size: 0.9rem;
+      font-size: 0.875rem;
       color: var(--text-dim);
       max-width: 680px;
-      margin: 0 auto 2.5rem;
+      margin: 0 auto 2.25rem;
     }
 
     .hero-actions {
@@ -231,13 +290,13 @@
       overflow: hidden;
       box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 1px rgba(255, 255, 255, 0.15);
       max-width: 880px;
-      margin: 0 auto 6rem;
+      margin: 0 auto 5rem;
       text-align: left;
     }
 
     .terminal-header {
       background: var(--surface-1);
-      padding: 0.8rem 1.25rem;
+      padding: 0.75rem 1rem;
       border-bottom: 1px solid var(--border-subtle);
       display: flex;
       align-items: center;
@@ -260,16 +319,21 @@
     .dot-green { background: #22c55e; }
 
     .terminal-title {
-      font-size: 0.8rem;
+      font-size: 0.775rem;
       color: var(--text-dim);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .terminal-body {
-      padding: 1.75rem;
-      font-size: 0.925rem;
+      padding: 1.5rem;
+      font-size: 0.9rem;
       line-height: 1.75;
-      min-height: 320px;
+      min-height: 300px;
       color: #e4e4e7;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     .t-prompt { color: var(--text-dim); margin-right: 0.5rem; }
@@ -284,11 +348,11 @@
     /* Section Typography */
     .section-title {
       text-align: center;
-      margin-bottom: 3.5rem;
+      margin-bottom: 3rem;
     }
 
     .section-title span.tagline {
-      font-size: 0.825rem;
+      font-size: 0.8rem;
       text-transform: uppercase;
       letter-spacing: 0.12em;
       color: var(--text-dim);
@@ -298,7 +362,7 @@
     }
 
     .section-title h2 {
-      font-size: clamp(2rem, 4vw, 2.75rem);
+      font-size: clamp(1.75rem, 4vw, 2.75rem);
       font-weight: 800;
       letter-spacing: -0.04em;
       margin-bottom: 0.75rem;
@@ -306,20 +370,20 @@
 
     .section-title p {
       color: var(--text-muted);
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       max-width: 640px;
       margin: 0 auto;
     }
 
     /* .apix Major Feature Section */
     .apix-section {
-      margin-bottom: 7rem;
+      margin-bottom: 6rem;
     }
 
     .apix-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 3rem;
+      gap: 2.5rem;
       align-items: center;
     }
 
@@ -332,15 +396,15 @@
       background: var(--surface-2);
       border: 1px solid var(--border-subtle);
       color: var(--cyan);
-      font-size: 0.825rem;
-      padding: 0.3rem 0.75rem;
+      font-size: 0.8rem;
+      padding: 0.25rem 0.65rem;
       border-radius: var(--radius-sm);
-      margin-bottom: 1.25rem;
+      margin-bottom: 1rem;
       font-weight: 600;
     }
 
     .apix-info h2 {
-      font-size: 2.5rem;
+      font-size: clamp(1.8rem, 3.5vw, 2.5rem);
       font-weight: 800;
       letter-spacing: -0.04em;
       margin-bottom: 1rem;
@@ -349,9 +413,9 @@
 
     .apix-info p {
       color: var(--text-muted);
-      font-size: 1.1rem;
-      line-height: 1.7;
-      margin-bottom: 2rem;
+      font-size: 1.05rem;
+      line-height: 1.65;
+      margin-bottom: 1.75rem;
     }
 
     .apix-points {
@@ -364,8 +428,8 @@
       align-items: flex-start;
       gap: 0.75rem;
       color: var(--text);
-      font-size: 0.95rem;
-      margin-bottom: 1rem;
+      font-size: 0.925rem;
+      margin-bottom: 0.85rem;
     }
 
     .apix-points li span.icon {
@@ -384,7 +448,7 @@
 
     .yaml-header {
       background: var(--surface-2);
-      padding: 0.75rem 1.25rem;
+      padding: 0.75rem 1rem;
       border-bottom: 1px solid var(--border-subtle);
       display: flex;
       justify-content: space-between;
@@ -392,27 +456,29 @@
     }
 
     .yaml-body {
-      padding: 1.5rem;
-      font-size: 0.875rem;
+      padding: 1.25rem;
+      font-size: 0.85rem;
       line-height: 1.75;
       color: var(--text);
       background: #000000;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     /* Three Surfaces Architecture Section */
     .surfaces-section {
-      margin-bottom: 7rem;
+      margin-bottom: 6rem;
       background: var(--surface-1);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-lg);
-      padding: 4rem 2.5rem;
+      padding: 3.5rem 1.5rem;
     }
 
     .surfaces-diagram {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
-      margin-top: 3.5rem;
+      gap: 1.25rem;
+      margin-top: 3rem;
       position: relative;
     }
 
@@ -424,7 +490,7 @@
       background: #000000;
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
-      padding: 2rem 1.5rem;
+      padding: 1.75rem 1.25rem;
       text-align: center;
       transition: var(--transition);
     }
@@ -436,16 +502,16 @@
 
     .surface-tag {
       display: inline-block;
-      font-size: 0.75rem;
+      font-size: 0.725rem;
       font-weight: 700;
       color: var(--text-dim);
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.65rem;
     }
 
     .surface-card h3 {
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       font-weight: 700;
       margin-bottom: 0.5rem;
     }
@@ -455,7 +521,7 @@
       background: var(--surface-2);
       border: 1px solid var(--border-subtle);
       color: var(--cyan);
-      font-size: 0.85rem;
+      font-size: 0.825rem;
       padding: 0.35rem 0.75rem;
       border-radius: var(--radius-sm);
       margin-bottom: 1rem;
@@ -464,13 +530,13 @@
 
     .surface-card p {
       color: var(--text-muted);
-      font-size: 0.925rem;
+      font-size: 0.9rem;
       line-height: 1.6;
     }
 
     /* Comparison Table Section ("Why APiX?") */
     .why-section {
-      margin-bottom: 7rem;
+      margin-bottom: 6rem;
     }
 
     .comparison-table-wrapper {
@@ -478,17 +544,19 @@
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
       overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     .comp-table {
       width: 100%;
       border-collapse: collapse;
       text-align: left;
-      font-size: 0.925rem;
+      font-size: 0.875rem;
+      min-width: 600px;
     }
 
     .comp-table th {
-      padding: 1.25rem 1.5rem;
+      padding: 1rem 1.15rem;
       font-weight: 700;
       background: var(--surface-2);
       border-bottom: 1px solid var(--border-subtle);
@@ -504,7 +572,7 @@
     }
 
     .comp-table td {
-      padding: 1.1rem 1.5rem;
+      padding: 1rem 1.15rem;
       border-bottom: 1px solid var(--border-subtle);
     }
 
@@ -537,25 +605,28 @@
 
     /* Interactive Demo Lifecycle Section */
     .interactive-demo-section {
-      margin-bottom: 7rem;
+      margin-bottom: 6rem;
     }
 
     .flow-stepper {
       display: flex;
       justify-content: space-between;
       gap: 0.5rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
       overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 0.5rem;
     }
 
     .step-btn {
       flex: 1;
+      min-width: 140px;
       background: var(--surface-1);
       border: 1px solid var(--border-subtle);
       color: var(--text-muted);
-      padding: 0.8rem 1rem;
+      padding: 0.75rem 0.85rem;
       border-radius: var(--radius-sm);
-      font-size: 0.875rem;
+      font-size: 0.825rem;
       cursor: pointer;
       text-align: left;
       transition: var(--transition);
@@ -576,14 +647,14 @@
 
     .step-btn span.num {
       display: inline-block;
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
       border-radius: 50%;
       background: var(--surface-3);
       text-align: center;
-      line-height: 20px;
-      font-size: 0.75rem;
-      margin-right: 0.5rem;
+      line-height: 18px;
+      font-size: 0.725rem;
+      margin-right: 0.4rem;
       color: var(--text-dim);
     }
 
@@ -598,29 +669,31 @@
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-lg);
       overflow: hidden;
-      min-height: 380px;
+      min-height: 340px;
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
     }
 
     .demo-output-body {
-      padding: 1.75rem;
-      font-size: 0.925rem;
+      padding: 1.5rem;
+      font-size: 0.875rem;
       line-height: 1.7;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     /* Features Grid */
     .features-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 7rem;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 6rem;
     }
 
     .feature-card {
       background: var(--surface-1);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
-      padding: 2rem;
+      padding: 1.75rem;
       transition: var(--transition);
     }
 
@@ -631,30 +704,30 @@
     }
 
     .feature-icon {
-      width: 40px;
-      height: 40px;
+      width: 38px;
+      height: 38px;
       border-radius: var(--radius-sm);
       background: var(--surface-2);
       border: 1px solid var(--border-subtle);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.2rem;
-      margin-bottom: 1.25rem;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
     }
 
     .feature-card h3 {
-      font-size: 1.2rem;
+      font-size: 1.15rem;
       font-weight: 700;
       letter-spacing: -0.02em;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.65rem;
     }
 
     .feature-card p {
       color: var(--text-muted);
-      font-size: 0.925rem;
+      font-size: 0.9rem;
       line-height: 1.6;
-      margin-bottom: 1.25rem;
+      margin-bottom: 1rem;
     }
 
     .feature-code {
@@ -662,37 +735,41 @@
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-sm);
       padding: 0.5rem 0.75rem;
-      font-size: 0.825rem;
+      font-size: 0.8rem;
       color: var(--cyan);
+      overflow-x: auto;
+      white-space: nowrap;
     }
 
     /* Code Generator Section */
     .codegen-section {
-      margin-bottom: 7rem;
+      margin-bottom: 6rem;
       background: var(--surface-1);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-lg);
-      padding: 3rem 2.5rem;
+      padding: 2.5rem 1.5rem;
     }
 
     .lang-tabs {
       display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-      margin-bottom: 1.5rem;
+      gap: 0.4rem;
+      margin-bottom: 1.25rem;
       border-bottom: 1px solid var(--border-subtle);
-      padding-bottom: 1rem;
+      padding-bottom: 0.85rem;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     .lang-tab {
       background: transparent;
       border: 1px solid var(--border-subtle);
       color: var(--text-muted);
-      padding: 0.4rem 0.9rem;
+      padding: 0.35rem 0.8rem;
       border-radius: var(--radius-sm);
-      font-size: 0.85rem;
+      font-size: 0.825rem;
       cursor: pointer;
       transition: var(--transition);
+      white-space: nowrap;
     }
 
     .lang-tab:hover {
@@ -711,28 +788,29 @@
       background: #000000;
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
-      padding: 1.5rem;
+      padding: 1.25rem;
       position: relative;
     }
 
     .code-display pre {
-      font-size: 0.9rem;
-      line-height: 1.75;
+      font-size: 0.85rem;
+      line-height: 1.7;
       color: var(--text);
       white-space: pre-wrap;
       word-break: break-all;
+      overflow-x: auto;
     }
 
     .copy-code-btn {
       position: absolute;
-      top: 1rem;
-      right: 1rem;
+      top: 0.85rem;
+      right: 0.85rem;
       background: var(--surface-2);
       border: 1px solid var(--border-subtle);
       color: var(--text-muted);
-      padding: 0.35rem 0.75rem;
+      padding: 0.3rem 0.65rem;
       border-radius: var(--radius-sm);
-      font-size: 0.8rem;
+      font-size: 0.775rem;
       cursor: pointer;
       transition: var(--transition);
     }
@@ -744,7 +822,7 @@
 
     /* CLI Reference Table */
     .commands-section {
-      margin-bottom: 7rem;
+      margin-bottom: 6rem;
     }
 
     .table-container {
@@ -752,25 +830,27 @@
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
       overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
       text-align: left;
-      font-size: 0.9rem;
+      font-size: 0.875rem;
+      min-width: 640px;
     }
 
     th {
       background: var(--surface-2);
-      padding: 1rem 1.25rem;
+      padding: 0.9rem 1.15rem;
       color: var(--text);
       font-weight: 600;
       border-bottom: 1px solid var(--border-subtle);
     }
 
     td {
-      padding: 1rem 1.25rem;
+      padding: 0.9rem 1.15rem;
       border-bottom: 1px solid var(--border-subtle);
       color: var(--text-muted);
     }
@@ -789,13 +869,13 @@
       background: linear-gradient(180deg, var(--surface-1) 0%, var(--surface-2) 100%);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-lg);
-      padding: 4.5rem 2rem;
+      padding: 3.5rem 1.25rem;
       text-align: center;
-      margin-bottom: 6rem;
+      margin-bottom: 5rem;
     }
 
     .cta-banner h2 {
-      font-size: 2.5rem;
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
       font-weight: 800;
       letter-spacing: -0.04em;
       margin-bottom: 1rem;
@@ -803,9 +883,9 @@
 
     .cta-banner p {
       color: var(--text-muted);
-      font-size: 1.15rem;
+      font-size: 1.05rem;
       max-width: 600px;
-      margin: 0 auto 2.5rem;
+      margin: 0 auto 2rem;
     }
 
     /* Copy Install Pill */
@@ -814,23 +894,48 @@
       align-items: center;
       background: #000000;
       border: 1px solid var(--border-subtle);
-      padding: 0.5rem 0.6rem 0.5rem 1.25rem;
+      padding: 0.5rem 0.6rem 0.5rem 1.1rem;
       border-radius: var(--radius-sm);
-      font-size: 0.925rem;
+      font-size: 0.875rem;
+      max-width: 100%;
     }
 
     .install-pill span.cmd-text {
       color: #ffffff;
       font-weight: 600;
-      margin-right: 1.25rem;
+      margin-right: 1rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 600px) {
+      .install-pill {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 0.85rem;
+        gap: 0.75rem;
+      }
+
+      .install-pill span.cmd-text {
+        margin-right: 0;
+        text-align: center;
+        font-size: 0.8rem;
+        white-space: normal;
+        word-break: break-all;
+      }
+
+      .install-pill .btn {
+        width: 100%;
+      }
     }
 
     /* Footer */
     footer {
       border-top: 1px solid var(--border-subtle);
-      padding: 3.5rem 0;
+      padding: 3rem 0;
       color: var(--text-muted);
-      font-size: 0.9rem;
+      font-size: 0.875rem;
     }
 
     .footer-flex {
@@ -838,18 +943,30 @@
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 1.5rem;
+      gap: 1.25rem;
     }
 
     .footer-links a {
       color: var(--text-muted);
       text-decoration: none;
-      margin-left: 1.5rem;
+      margin-left: 1.25rem;
       transition: var(--transition);
     }
 
     .footer-links a:hover {
       color: var(--text);
+    }
+
+    @media (max-width: 600px) {
+      .footer-flex {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .footer-links a {
+        margin-left: 0;
+        margin-right: 1.25rem;
+      }
     }
   </style>
 </head>
@@ -862,13 +979,18 @@
         <span class="logo mono">APiX</span>
         <span class="badge-ver mono">v1.0.2</span>
       </a>
-      <nav class="nav-links">
-        <a href="#apix-format">.apix Format</a>
-        <a href="#surfaces">3 Surfaces</a>
-        <a href="#why">Why APiX</a>
-        <a href="#demo">Interactive Demo</a>
-        <a href="#features">Features</a>
-        <a href="#codegen">Code Generator</a>
+
+      <button class="mobile-toggle mono" onclick="toggleMobileNav()" aria-label="Toggle Navigation">
+        <span id="navToggleIcon">☰ Menu</span>
+      </button>
+
+      <nav class="nav-links" id="mobileNavMenu">
+        <a href="#apix-format" onclick="closeMobileNav()">.apix Format</a>
+        <a href="#surfaces" onclick="closeMobileNav()">3 Surfaces</a>
+        <a href="#why" onclick="closeMobileNav()">Why APiX</a>
+        <a href="#demo" onclick="closeMobileNav()">Interactive Demo</a>
+        <a href="#features" onclick="closeMobileNav()">Features</a>
+        <a href="#codegen" onclick="closeMobileNav()">Code Generator</a>
         <a href="https://github.com" target="_blank" class="btn btn-sm">GitHub</a>
       </nav>
     </div>
@@ -1263,6 +1385,25 @@
 
   <!-- INTERACTIVE JAVASCRIPT -->
   <script>
+    // Toggle Mobile Nav Menu
+    function toggleMobileNav() {
+      const nav = document.getElementById('mobileNavMenu');
+      const icon = document.getElementById('navToggleIcon');
+      nav.classList.toggle('open');
+      if (nav.classList.contains('open')) {
+        icon.innerText = '✕ Close';
+      } else {
+        icon.innerText = '☰ Menu';
+      }
+    }
+
+    function closeMobileNav() {
+      const nav = document.getElementById('mobileNavMenu');
+      const icon = document.getElementById('navToggleIcon');
+      nav.classList.remove('open');
+      icon.innerText = '☰ Menu';
+    }
+
     // Copy Install Command
     function copyInstallCmd(btn) {
       navigator.clipboard.writeText('npm install -g @praiseikebuwa/apix-cli');
