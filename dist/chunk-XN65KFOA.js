@@ -1589,49 +1589,71 @@ var Header = () => {
   const { spec, activeEnv, loading } = useApp();
   const isConnected = Boolean(spec);
   const isProd = activeEnv.isProduction;
-  return /* @__PURE__ */ jsxs(Box, { flexDirection: "column", borderStyle: "round", borderColor: "cyan", paddingX: 1, marginBottom: 1, children: [
-    /* @__PURE__ */ jsxs(Box, { justifyContent: "space-between", children: [
-      /* @__PURE__ */ jsxs(Box, { children: [
+  return /* @__PURE__ */ jsxs(Box, {
+    flexDirection: "column", borderStyle: "round", borderColor: "cyan", paddingX: 1, marginBottom: 1, children: [
+    /* @__PURE__ */ jsxs(Box, {
+      justifyContent: "space-between", children: [
+      /* @__PURE__ */ jsxs(Box, {
+        children: [
         /* @__PURE__ */ jsx2(Text, { bold: true, color: "cyan", children: "APiX" }),
         /* @__PURE__ */ jsx2(Text, { color: "gray", children: " \u2502 Universal Terminal API Platform" })
-      ] }),
+        ]
+      }),
       /* @__PURE__ */ jsx2(Box, { children: /* @__PURE__ */ jsx2(Text, { color: "gray", children: "v1.0.0" }) })
-    ] }),
-    /* @__PURE__ */ jsxs(Box, { justifyContent: "space-between", marginTop: 1, children: [
-      /* @__PURE__ */ jsxs(Box, { children: [
-        isConnected ? /* @__PURE__ */ jsx2(Text, { color: "green", children: "\u25CF CONNECTED " }) : /* @__PURE__ */ jsx2(Text, { color: "yellow", children: "\u25CB DISCONNECTED " }),
+      ]
+    }),
+    /* @__PURE__ */ jsxs(Box, {
+      justifyContent: "space-between", marginTop: 1, children: [
+      /* @__PURE__ */ jsxs(Box, {
+        children: [
+          isConnected ? /* @__PURE__ */ jsx2(Text, { color: "green", children: "\u25CF CONNECTED " }) : /* @__PURE__ */ jsx2(Text, { color: "yellow", children: "\u25CB DISCONNECTED " }),
         /* @__PURE__ */ jsx2(Text, { bold: true, color: "white", children: spec ? spec.title || spec.baseUrl : "No API connected" }),
-        spec && /* @__PURE__ */ jsxs(Text, { color: "gray", children: [
-          " (",
-          spec.baseUrl,
-          ")"
-        ] })
-      ] }),
-      /* @__PURE__ */ jsxs(Box, { children: [
+          spec && /* @__PURE__ */ jsxs(Text, {
+            color: "gray", children: [
+              " (",
+              spec.baseUrl,
+              ")"
+            ]
+          })
+        ]
+      }),
+      /* @__PURE__ */ jsxs(Box, {
+        children: [
         /* @__PURE__ */ jsx2(Text, { children: "Env: " }),
-        isProd ? /* @__PURE__ */ jsxs(Text, { bold: true, color: "red", backgroundColor: "black", children: [
-          "[",
-          activeEnv.name.toUpperCase(),
-          "]"
-        ] }) : /* @__PURE__ */ jsxs(Text, { bold: true, color: "magenta", children: [
-          "[",
-          activeEnv.name,
-          "]"
-        ] })
-      ] })
-    ] }),
-    spec && /* @__PURE__ */ jsx2(Box, { marginTop: 0, children: /* @__PURE__ */ jsxs(Text, { color: "gray", children: [
-      "Endpoints: ",
+          isProd ? /* @__PURE__ */ jsxs(Text, {
+            bold: true, color: "red", backgroundColor: "black", children: [
+              "[",
+              activeEnv.name.toUpperCase(),
+              "]"
+            ]
+          }) : /* @__PURE__ */ jsxs(Text, {
+            bold: true, color: "magenta", children: [
+              "[",
+              activeEnv.name,
+              "]"
+            ]
+          })
+        ]
+      })
+      ]
+    }),
+      spec && /* @__PURE__ */ jsx2(Box, {
+        marginTop: 0, children: /* @__PURE__ */ jsxs(Text, {
+          color: "gray", children: [
+            "Endpoints: ",
       /* @__PURE__ */ jsx2(Text, { color: "white", children: spec.endpoints.length }),
-      " \u2502 Schemas:",
-      " ",
+            " \u2502 Schemas:",
+            " ",
       /* @__PURE__ */ jsx2(Text, { color: "white", children: Object.keys(spec.schemas || {}).length }),
-      " \u2502 Source:",
-      " ",
+            " \u2502 Source:",
+            " ",
       /* @__PURE__ */ jsx2(Text, { color: "cyan", children: spec.endpoints[0]?.source || "DOCUMENTED" }),
-      loading ? /* @__PURE__ */ jsx2(Text, { color: "yellow", children: " \u2502 [Busy...]" }) : null
-    ] }) })
-  ] });
+            loading ? /* @__PURE__ */ jsx2(Text, { color: "yellow", children: " \u2502 [Busy...]" }) : null
+          ]
+        })
+      })
+    ]
+  });
 };
 
 // src/tui/components/StatusBar.tsx
@@ -1639,20 +1661,26 @@ import { Box as Box2, Text as Text2 } from "ink";
 import { Fragment, jsx as jsx3, jsxs as jsxs2 } from "react/jsx-runtime";
 var StatusBar = () => {
   const { statusMessage, screen } = useApp();
-  return /* @__PURE__ */ jsxs2(Box2, { flexDirection: "column", marginTop: 1, children: [
-    statusMessage && /* @__PURE__ */ jsx3(Box2, { paddingX: 1, children: /* @__PURE__ */ jsxs2(Text2, { color: "yellow", children: [
-      "\u2139 ",
-      statusMessage
-    ] }) }),
+  return /* @__PURE__ */ jsxs2(Box2, {
+    flexDirection: "column", marginTop: 1, children: [
+      statusMessage && /* @__PURE__ */ jsx3(Box2, {
+        paddingX: 1, children: /* @__PURE__ */ jsxs2(Text2, {
+          color: "yellow", children: [
+            "\u2139 ",
+            statusMessage
+          ]
+        })
+      }),
     /* @__PURE__ */ jsxs2(
-      Box2,
-      {
-        borderStyle: "single",
-        borderColor: "gray",
-        paddingX: 1,
-        justifyContent: "space-between",
-        children: [
-          /* @__PURE__ */ jsxs2(Box2, { children: [
+        Box2,
+        {
+          borderStyle: "single",
+          borderColor: "gray",
+          paddingX: 1,
+          justifyContent: "space-between",
+          children: [
+          /* @__PURE__ */ jsxs2(Box2, {
+            children: [
             /* @__PURE__ */ jsx3(Text2, { color: "cyan", children: "\u2191\u2193" }),
             /* @__PURE__ */ jsx3(Text2, { color: "gray", children: " Nav " }),
             /* @__PURE__ */ jsx3(Text2, { color: "cyan", children: "Enter" }),
@@ -1663,21 +1691,27 @@ var StatusBar = () => {
             /* @__PURE__ */ jsx3(Text2, { color: "gray", children: " Search " }),
             /* @__PURE__ */ jsx3(Text2, { color: "cyan", children: "^P" }),
             /* @__PURE__ */ jsx3(Text2, { color: "gray", children: " Palette " }),
-            screen === "builder" && /* @__PURE__ */ jsxs2(Fragment, { children: [
+              screen === "builder" && /* @__PURE__ */ jsxs2(Fragment, {
+                children: [
               /* @__PURE__ */ jsx3(Text2, { color: "green", children: "^R" }),
               /* @__PURE__ */ jsx3(Text2, { color: "gray", children: " Run " })
-            ] }),
+                ]
+              }),
             /* @__PURE__ */ jsx3(Text2, { color: "cyan", children: "q" }),
             /* @__PURE__ */ jsx3(Text2, { color: "gray", children: " Quit" })
-          ] }),
-          /* @__PURE__ */ jsxs2(Box2, { children: [
+            ]
+          }),
+          /* @__PURE__ */ jsxs2(Box2, {
+            children: [
             /* @__PURE__ */ jsx3(Text2, { color: "gray", children: "Screen: " }),
             /* @__PURE__ */ jsx3(Text2, { bold: true, color: "white", children: screen.toUpperCase() })
-          ] })
-        ]
-      }
-    )
-  ] });
+            ]
+          })
+          ]
+        }
+      )
+    ]
+  });
 };
 
 // src/tui/components/CommandPalette.tsx
@@ -1817,29 +1851,41 @@ var CommandPalette = ({ onClose }) => {
       padding: 1,
       width: 70,
       children: [
-        /* @__PURE__ */ jsxs3(Box3, { marginBottom: 1, justifyContent: "space-between", children: [
+        /* @__PURE__ */ jsxs3(Box3, {
+        marginBottom: 1, justifyContent: "space-between", children: [
           /* @__PURE__ */ jsx4(Text3, { bold: true, color: "magenta", children: "\u26A1 Command Palette" }),
           /* @__PURE__ */ jsx4(Text3, { color: "gray", children: "Esc to close" })
-        ] }),
-        /* @__PURE__ */ jsxs3(Box3, { borderStyle: "single", borderColor: "cyan", paddingX: 1, marginBottom: 1, children: [
+        ]
+      }),
+        /* @__PURE__ */ jsxs3(Box3, {
+        borderStyle: "single", borderColor: "cyan", paddingX: 1, marginBottom: 1, children: [
           /* @__PURE__ */ jsx4(Text3, { color: "cyan", children: "> " }),
           /* @__PURE__ */ jsx4(Text3, { bold: true, children: query }),
           /* @__PURE__ */ jsx4(Text3, { color: "gray", children: "_" })
-        ] }),
-        /* @__PURE__ */ jsx4(Box3, { flexDirection: "column", children: filtered.length === 0 ? /* @__PURE__ */ jsx4(Text3, { color: "gray", children: "No matching commands found." }) : filtered.slice(0, 8).map((cmd, i) => {
+        ]
+      }),
+        /* @__PURE__ */ jsx4(Box3, {
+        flexDirection: "column", children: filtered.length === 0 ? /* @__PURE__ */ jsx4(Text3, { color: "gray", children: "No matching commands found." }) : filtered.slice(0, 8).map((cmd, i) => {
           const isSelected = i === selectedIndex;
-          return /* @__PURE__ */ jsxs3(Box3, { justifyContent: "space-between", children: [
-            /* @__PURE__ */ jsxs3(Text3, { color: isSelected ? "cyan" : "white", bold: isSelected, children: [
-              isSelected ? "\u276F " : "  ",
-              cmd.title
-            ] }),
-            /* @__PURE__ */ jsxs3(Text3, { color: "gray", children: [
-              "[",
-              cmd.category,
-              "]"
-            ] })
-          ] }, cmd.id);
-        }) })
+          return /* @__PURE__ */ jsxs3(Box3, {
+            justifyContent: "space-between", children: [
+            /* @__PURE__ */ jsxs3(Text3, {
+              color: isSelected ? "cyan" : "white", bold: isSelected, children: [
+                isSelected ? "\u276F " : "  ",
+                cmd.title
+              ]
+            }),
+            /* @__PURE__ */ jsxs3(Text3, {
+              color: "gray", children: [
+                "[",
+                cmd.category,
+                "]"
+              ]
+            })
+            ]
+          }, cmd.id);
+        })
+      })
       ]
     }
   );
@@ -1872,13 +1918,17 @@ var ProductionWarning = ({
         /* @__PURE__ */ jsx5(Box4, { marginBottom: 1, children: /* @__PURE__ */ jsx5(Text4, { bold: true, color: "red", backgroundColor: "black", children: "\u26A0 PRODUCTION SAFETY WARNING" }) }),
         /* @__PURE__ */ jsx5(Box4, { marginBottom: 1, children: /* @__PURE__ */ jsx5(Text4, { color: "yellow", children: message }) }),
         /* @__PURE__ */ jsx5(Box4, { marginBottom: 1, children: /* @__PURE__ */ jsx5(Text4, { color: "red", children: "This operation may permanently modify or delete remote data in PRODUCTION." }) }),
-        /* @__PURE__ */ jsx5(Box4, { borderStyle: "single", borderColor: "gray", paddingX: 1, justifyContent: "space-between", children: /* @__PURE__ */ jsxs4(Text4, { bold: true, color: "white", children: [
-          "Press ",
+        /* @__PURE__ */ jsx5(Box4, {
+        borderStyle: "single", borderColor: "gray", paddingX: 1, justifyContent: "space-between", children: /* @__PURE__ */ jsxs4(Text4, {
+          bold: true, color: "white", children: [
+            "Press ",
           /* @__PURE__ */ jsx5(Text4, { color: "green", children: "[y]" }),
-          " to confirm, or ",
+            " to confirm, or ",
           /* @__PURE__ */ jsx5(Text4, { color: "red", children: "[n / Esc]" }),
-          " to cancel."
-        ] }) })
+            " to cancel."
+          ]
+        })
+      })
       ]
     }
   );
@@ -1938,11 +1988,14 @@ var DashboardScreen = () => {
       }
     }
   });
-  return /* @__PURE__ */ jsxs5(Box5, { flexDirection: "column", paddingX: 1, children: [
-    /* @__PURE__ */ jsxs5(Box5, { marginBottom: 1, flexDirection: "column", children: [
+  return /* @__PURE__ */ jsxs5(Box5, {
+    flexDirection: "column", paddingX: 1, children: [
+    /* @__PURE__ */ jsxs5(Box5, {
+      marginBottom: 1, flexDirection: "column", children: [
       /* @__PURE__ */ jsx6(Text5, { bold: true, color: "white", children: "Universal API Explorer & Development Platform" }),
       /* @__PURE__ */ jsx6(Text5, { color: "gray", children: "Connect to any REST or OpenAPI endpoint to inspect, execute, and test APIs." })
-    ] }),
+      ]
+    }),
     /* @__PURE__ */ jsxs5(
       Box5,
       {
@@ -1953,35 +2006,42 @@ var DashboardScreen = () => {
         flexDirection: "column",
         children: [
           /* @__PURE__ */ jsx6(Text5, { color: "gray", children: "API Target URL (Press Enter to edit/connect):" }),
-          /* @__PURE__ */ jsxs5(Box5, { children: [
+          /* @__PURE__ */ jsxs5(Box5, {
+          children: [
             /* @__PURE__ */ jsx6(Text5, { color: "cyan", children: "> " }),
             /* @__PURE__ */ jsx6(Text5, { bold: true, color: "white", children: urlInput }),
             isEditingUrl && /* @__PURE__ */ jsx6(Text5, { color: "green", children: " \u2588 (Typing... Press Enter to connect)" })
-          ] })
+          ]
+        })
         ]
       }
     ),
-    /* @__PURE__ */ jsxs5(Box5, { flexDirection: "column", borderStyle: "single", borderColor: "gray", paddingX: 1, marginBottom: 1, children: [
+    /* @__PURE__ */ jsxs5(Box5, {
+      flexDirection: "column", borderStyle: "single", borderColor: "gray", paddingX: 1, marginBottom: 1, children: [
       /* @__PURE__ */ jsx6(Text5, { bold: true, color: "cyan", marginBottom: 1, children: "Actions" }),
-      menuItems.map((item, index) => {
-        const isSelected = index === selectedIndex && !isEditingUrl;
-        return /* @__PURE__ */ jsxs5(Box5, { children: [
+        menuItems.map((item, index) => {
+          const isSelected = index === selectedIndex && !isEditingUrl;
+          return /* @__PURE__ */ jsxs5(Box5, {
+            children: [
           /* @__PURE__ */ jsxs5(
-            Text5,
-            {
-              color: item.disabled ? "gray" : isSelected ? "cyan" : "white",
-              bold: isSelected,
-              children: [
-                isSelected ? "\u276F " : "  ",
-                item.label
-              ]
-            }
-          ),
-          item.disabled && /* @__PURE__ */ jsx6(Text5, { color: "gray", children: " (requires connected API)" })
-        ] }, item.label);
-      })
-    ] })
-  ] });
+              Text5,
+              {
+                color: item.disabled ? "gray" : isSelected ? "cyan" : "white",
+                bold: isSelected,
+                children: [
+                  isSelected ? "\u276F " : "  ",
+                  item.label
+                ]
+              }
+            ),
+              item.disabled && /* @__PURE__ */ jsx6(Text5, { color: "gray", children: " (requires connected API)" })
+            ]
+          }, item.label);
+        })
+      ]
+    })
+    ]
+  });
 };
 
 // src/tui/screens/ExplorerScreen.tsx
@@ -2063,25 +2123,36 @@ var ExplorerScreen = () => {
         return "cyan";
     }
   };
-  return /* @__PURE__ */ jsxs6(Box6, { flexDirection: "column", paddingX: 1, children: [
-    /* @__PURE__ */ jsxs6(Box6, { justifyContent: "space-between", marginBottom: 1, children: [
-      /* @__PURE__ */ jsxs6(Text6, { bold: true, color: "cyan", children: [
-        "API Explorer (",
-        filteredEndpoints.length,
-        " of ",
-        spec.endpoints.length,
-        " endpoints)"
-      ] }),
-      /* @__PURE__ */ jsx7(Text6, { color: "gray", children: isFiltering ? /* @__PURE__ */ jsxs6(Text6, { color: "green", children: [
-        "Filter: ",
-        filter,
-        "\u2588 (Enter to finish)"
-      ] }) : /* @__PURE__ */ jsxs6(Text6, { children: [
-        "Press ",
+  return /* @__PURE__ */ jsxs6(Box6, {
+    flexDirection: "column", paddingX: 1, children: [
+    /* @__PURE__ */ jsxs6(Box6, {
+      justifyContent: "space-between", marginBottom: 1, children: [
+      /* @__PURE__ */ jsxs6(Text6, {
+        bold: true, color: "cyan", children: [
+          "API Explorer (",
+          filteredEndpoints.length,
+          " of ",
+          spec.endpoints.length,
+          " endpoints)"
+        ]
+      }),
+      /* @__PURE__ */ jsx7(Text6, {
+        color: "gray", children: isFiltering ? /* @__PURE__ */ jsxs6(Text6, {
+          color: "green", children: [
+            "Filter: ",
+            filter,
+            "\u2588 (Enter to finish)"
+          ]
+        }) : /* @__PURE__ */ jsxs6(Text6, {
+          children: [
+            "Press ",
         /* @__PURE__ */ jsx7(Text6, { color: "cyan", children: "/" }),
-        " to search"
-      ] }) })
-    ] }),
+            " to search"
+          ]
+        })
+      })
+      ]
+    }),
     /* @__PURE__ */ jsx7(
       Box6,
       {
@@ -2090,31 +2161,42 @@ var ExplorerScreen = () => {
         borderColor: "gray",
         paddingX: 1,
         minHeight: 12,
-        children: filteredEndpoints.length === 0 ? /* @__PURE__ */ jsxs6(Text6, { color: "gray", children: [
-          'No endpoints match filter "',
-          filter,
-          '".'
-        ] }) : filteredEndpoints.slice(0, 15).map((ep, i) => {
+        children: filteredEndpoints.length === 0 ? /* @__PURE__ */ jsxs6(Text6, {
+          color: "gray", children: [
+            'No endpoints match filter "',
+            filter,
+            '".'
+          ]
+        }) : filteredEndpoints.slice(0, 15).map((ep, i) => {
           const isSelected = i === selectedIndex;
-          return /* @__PURE__ */ jsxs6(Box6, { justifyContent: "space-between", children: [
-            /* @__PURE__ */ jsxs6(Box6, { children: [
+          return /* @__PURE__ */ jsxs6(Box6, {
+            justifyContent: "space-between", children: [
+            /* @__PURE__ */ jsxs6(Box6, {
+              children: [
               /* @__PURE__ */ jsx7(Text6, { color: isSelected ? "cyan" : "white", bold: isSelected, children: isSelected ? "\u276F " : "  " }),
               /* @__PURE__ */ jsx7(Text6, { bold: true, color: getMethodColor(ep.method), children: ep.method.padEnd(7) }),
               /* @__PURE__ */ jsx7(Text6, { color: isSelected ? "cyan" : "white", bold: isSelected, children: ep.path })
-            ] }),
-            /* @__PURE__ */ jsxs6(Box6, { children: [
+              ]
+            }),
+            /* @__PURE__ */ jsxs6(Box6, {
+              children: [
               /* @__PURE__ */ jsx7(Text6, { color: "gray", children: ep.summary ? ep.summary.slice(0, 30) : "" }),
-              /* @__PURE__ */ jsxs6(Text6, { color: "gray", children: [
-                " [",
-                ep.tags[0] || "General",
-                "]"
-              ] })
-            ] })
-          ] }, `${ep.method}_${ep.path}_${i}`);
+              /* @__PURE__ */ jsxs6(Text6, {
+                color: "gray", children: [
+                  " [",
+                  ep.tags[0] || "General",
+                  "]"
+                ]
+              })
+              ]
+            })
+            ]
+          }, `${ep.method}_${ep.path}_${i}`);
         })
       }
     )
-  ] });
+    ]
+  });
 };
 
 // src/tui/screens/EndpointDetailScreen.tsx
@@ -2454,74 +2536,110 @@ var EndpointDetailScreen = () => {
     method: activeEndpoint.method,
     body: activeEndpoint.requestBody?.example
   });
-  return /* @__PURE__ */ jsxs7(Box7, { flexDirection: "column", paddingX: 1, children: [
-    /* @__PURE__ */ jsxs7(Box7, { borderStyle: "single", borderColor: "cyan", paddingX: 1, marginBottom: 1, justifyContent: "space-between", children: [
-      /* @__PURE__ */ jsxs7(Box7, { children: [
-        /* @__PURE__ */ jsxs7(Text7, { bold: true, color: getMethodColor(activeEndpoint.method), children: [
-          activeEndpoint.method,
-          " "
-        ] }),
+  return /* @__PURE__ */ jsxs7(Box7, {
+    flexDirection: "column", paddingX: 1, children: [
+    /* @__PURE__ */ jsxs7(Box7, {
+      borderStyle: "single", borderColor: "cyan", paddingX: 1, marginBottom: 1, justifyContent: "space-between", children: [
+      /* @__PURE__ */ jsxs7(Box7, {
+        children: [
+        /* @__PURE__ */ jsxs7(Text7, {
+          bold: true, color: getMethodColor(activeEndpoint.method), children: [
+            activeEndpoint.method,
+            " "
+          ]
+        }),
         /* @__PURE__ */ jsx8(Text7, { bold: true, color: "white", children: activeEndpoint.path })
-      ] }),
-      /* @__PURE__ */ jsxs7(Box7, { children: [
+        ]
+      }),
+      /* @__PURE__ */ jsxs7(Box7, {
+        children: [
         /* @__PURE__ */ jsx8(Text7, { color: "gray", children: "Source: " }),
         /* @__PURE__ */ jsx8(Text7, { color: "cyan", children: activeEndpoint.source })
-      ] })
-    ] }),
-    activeEndpoint.description && /* @__PURE__ */ jsx8(Box7, { marginBottom: 1, children: /* @__PURE__ */ jsx8(Text7, { color: "white", children: activeEndpoint.description }) }),
-    /* @__PURE__ */ jsxs7(Box7, { flexDirection: "column", marginBottom: 1, children: [
-      /* @__PURE__ */ jsxs7(Text7, { bold: true, color: "cyan", children: [
-        "Parameters (",
-        activeEndpoint.parameters.length,
-        "):"
-      ] }),
-      activeEndpoint.parameters.length === 0 ? /* @__PURE__ */ jsx8(Text7, { color: "gray", children: "  None required" }) : activeEndpoint.parameters.map((p, idx) => /* @__PURE__ */ jsxs7(Box7, { children: [
+        ]
+      })
+      ]
+    }),
+      activeEndpoint.description && /* @__PURE__ */ jsx8(Box7, { marginBottom: 1, children: /* @__PURE__ */ jsx8(Text7, { color: "white", children: activeEndpoint.description }) }),
+    /* @__PURE__ */ jsxs7(Box7, {
+        flexDirection: "column", marginBottom: 1, children: [
+      /* @__PURE__ */ jsxs7(Text7, {
+          bold: true, color: "cyan", children: [
+            "Parameters (",
+            activeEndpoint.parameters.length,
+            "):"
+          ]
+        }),
+          activeEndpoint.parameters.length === 0 ? /* @__PURE__ */ jsx8(Text7, { color: "gray", children: "  None required" }) : activeEndpoint.parameters.map((p, idx) => /* @__PURE__ */ jsxs7(Box7, {
+            children: [
         /* @__PURE__ */ jsx8(Text7, { color: "white", children: "  \u2022 " }),
         /* @__PURE__ */ jsx8(Text7, { bold: true, color: "yellow", children: p.name }),
-        /* @__PURE__ */ jsxs7(Text7, { color: "gray", children: [
-          " (",
-          p.in,
-          ") "
-        ] }),
-        p.required ? /* @__PURE__ */ jsx8(Text7, { color: "red", children: "required " }) : /* @__PURE__ */ jsx8(Text7, { color: "gray", children: "optional " }),
-        p.description && /* @__PURE__ */ jsxs7(Text7, { color: "gray", children: [
-          "- ",
-          p.description
-        ] })
-      ] }, `${p.name}_${idx}`))
-    ] }),
-    activeEndpoint.requestBody && /* @__PURE__ */ jsxs7(Box7, { flexDirection: "column", marginBottom: 1, children: [
-      /* @__PURE__ */ jsxs7(Text7, { bold: true, color: "cyan", children: [
-        "Request Body (",
-        activeEndpoint.requestBody.contentType,
-        "):"
-      ] }),
-      activeEndpoint.requestBody.description && /* @__PURE__ */ jsxs7(Text7, { color: "gray", children: [
-        "  ",
-        activeEndpoint.requestBody.description
-      ] }),
-      activeEndpoint.requestBody.example && /* @__PURE__ */ jsx8(Box7, { borderStyle: "single", borderColor: "gray", paddingX: 1, children: /* @__PURE__ */ jsx8(Text7, { color: "green", children: JSON.stringify(activeEndpoint.requestBody.example, null, 2).slice(0, 200) }) })
-    ] }),
-    /* @__PURE__ */ jsxs7(Box7, { flexDirection: "column", marginBottom: 1, children: [
+        /* @__PURE__ */ jsxs7(Text7, {
+              color: "gray", children: [
+                " (",
+                p.in,
+                ") "
+              ]
+            }),
+              p.required ? /* @__PURE__ */ jsx8(Text7, { color: "red", children: "required " }) : /* @__PURE__ */ jsx8(Text7, { color: "gray", children: "optional " }),
+              p.description && /* @__PURE__ */ jsxs7(Text7, {
+                color: "gray", children: [
+                  "- ",
+                  p.description
+                ]
+              })
+            ]
+          }, `${p.name}_${idx}`))
+        ]
+      }),
+      activeEndpoint.requestBody && /* @__PURE__ */ jsxs7(Box7, {
+        flexDirection: "column", marginBottom: 1, children: [
+      /* @__PURE__ */ jsxs7(Text7, {
+          bold: true, color: "cyan", children: [
+            "Request Body (",
+            activeEndpoint.requestBody.contentType,
+            "):"
+          ]
+        }),
+          activeEndpoint.requestBody.description && /* @__PURE__ */ jsxs7(Text7, {
+            color: "gray", children: [
+              "  ",
+              activeEndpoint.requestBody.description
+            ]
+          }),
+          activeEndpoint.requestBody.example && /* @__PURE__ */ jsx8(Box7, { borderStyle: "single", borderColor: "gray", paddingX: 1, children: /* @__PURE__ */ jsx8(Text7, { color: "green", children: JSON.stringify(activeEndpoint.requestBody.example, null, 2).slice(0, 200) }) })
+        ]
+      }),
+    /* @__PURE__ */ jsxs7(Box7, {
+        flexDirection: "column", marginBottom: 1, children: [
       /* @__PURE__ */ jsx8(Text7, { bold: true, color: "cyan", children: "Responses:" }),
-      activeEndpoint.responses.map((r, i) => /* @__PURE__ */ jsxs7(Box7, { children: [
-        /* @__PURE__ */ jsxs7(Text7, { color: String(r.statusCode).startsWith("2") ? "green" : "yellow", children: [
-          "  ",
-          "[",
-          r.statusCode,
-          "]"
-        ] }),
-        /* @__PURE__ */ jsxs7(Text7, { color: "gray", children: [
-          " ",
-          r.description || "Response"
-        ] })
-      ] }, `${r.statusCode}_${i}`))
-    ] }),
-    /* @__PURE__ */ jsxs7(Box7, { borderStyle: "single", borderColor: "green", paddingX: 1, justifyContent: "space-between", children: [
+          activeEndpoint.responses.map((r, i) => /* @__PURE__ */ jsxs7(Box7, {
+            children: [
+        /* @__PURE__ */ jsxs7(Text7, {
+              color: String(r.statusCode).startsWith("2") ? "green" : "yellow", children: [
+                "  ",
+                "[",
+                r.statusCode,
+                "]"
+              ]
+            }),
+        /* @__PURE__ */ jsxs7(Text7, {
+              color: "gray", children: [
+                " ",
+                r.description || "Response"
+              ]
+            })
+            ]
+          }, `${r.statusCode}_${i}`))
+        ]
+      }),
+    /* @__PURE__ */ jsxs7(Box7, {
+        borderStyle: "single", borderColor: "green", paddingX: 1, justifyContent: "space-between", children: [
       /* @__PURE__ */ jsx8(Text7, { bold: true, color: "green", children: "Press [Enter] to Build & Run Request" }),
       /* @__PURE__ */ jsx8(Text7, { color: "gray", children: "[c] Code Generator \u2502 [Esc] Back" })
-    ] })
-  ] });
+        ]
+      })
+    ]
+  });
 };
 
 // src/tui/screens/RequestBuilderScreen.tsx
@@ -2619,70 +2737,98 @@ var RequestBuilderScreen = () => {
     }
     executeRequest();
   };
-  return /* @__PURE__ */ jsxs8(Box8, { flexDirection: "column", paddingX: 1, children: [
-    /* @__PURE__ */ jsxs8(Box8, { borderStyle: "single", borderColor: "cyan", paddingX: 1, marginBottom: 1, justifyContent: "space-between", children: [
-      /* @__PURE__ */ jsx9(Box8, { children: /* @__PURE__ */ jsxs8(Text8, { bold: true, color: "cyan", children: [
-        "Request Builder: ",
-        activeEndpoint.method,
-        " ",
-        activeEndpoint.path
-      ] }) }),
+  return /* @__PURE__ */ jsxs8(Box8, {
+    flexDirection: "column", paddingX: 1, children: [
+    /* @__PURE__ */ jsxs8(Box8, {
+      borderStyle: "single", borderColor: "cyan", paddingX: 1, marginBottom: 1, justifyContent: "space-between", children: [
+      /* @__PURE__ */ jsx9(Box8, {
+        children: /* @__PURE__ */ jsxs8(Text8, {
+          bold: true, color: "cyan", children: [
+            "Request Builder: ",
+            activeEndpoint.method,
+            " ",
+            activeEndpoint.path
+          ]
+        })
+      }),
       /* @__PURE__ */ jsx9(Box8, { children: /* @__PURE__ */ jsx9(Text8, { color: "green", children: "Press Ctrl+R to Execute" }) })
-    ] }),
-    activeEndpoint.parameters.length > 0 && /* @__PURE__ */ jsxs8(Box8, { flexDirection: "column", marginBottom: 1, children: [
+      ]
+    }),
+      activeEndpoint.parameters.length > 0 && /* @__PURE__ */ jsxs8(Box8, {
+        flexDirection: "column", marginBottom: 1, children: [
       /* @__PURE__ */ jsx9(Text8, { bold: true, color: "yellow", children: "Parameters:" }),
-      activeEndpoint.parameters.map((p, idx) => /* @__PURE__ */ jsxs8(Box8, { children: [
-        /* @__PURE__ */ jsxs8(Text8, { color: "gray", children: [
-          "  ",
-          p.in,
-          ": "
-        ] }),
-        /* @__PURE__ */ jsxs8(Text8, { bold: true, color: "white", children: [
-          p.name,
-          " =",
-          " "
-        ] }),
+          activeEndpoint.parameters.map((p, idx) => /* @__PURE__ */ jsxs8(Box8, {
+            children: [
+        /* @__PURE__ */ jsxs8(Text8, {
+              color: "gray", children: [
+                "  ",
+                p.in,
+                ": "
+              ]
+            }),
+        /* @__PURE__ */ jsxs8(Text8, {
+              bold: true, color: "white", children: [
+                p.name,
+                " =",
+                " "
+              ]
+            }),
         /* @__PURE__ */ jsx9(Text8, { color: "cyan", children: builderParams[p.name] || p.defaultValue || "(default)" })
-      ] }, `${p.name}_${idx}`))
-    ] }),
-    ["POST", "PUT", "PATCH"].includes(activeEndpoint.method) && /* @__PURE__ */ jsxs8(Box8, { flexDirection: "column", marginBottom: 1, children: [
-      /* @__PURE__ */ jsxs8(Box8, { justifyContent: "space-between", children: [
-        /* @__PURE__ */ jsxs8(Text8, { bold: true, color: activeField === "body" ? "cyan" : "white", children: [
-          activeField === "body" ? "\u276F " : "  ",
-          "Request Body (JSON):"
-        ] }),
+            ]
+          }, `${p.name}_${idx}`))
+        ]
+      }),
+      ["POST", "PUT", "PATCH"].includes(activeEndpoint.method) && /* @__PURE__ */ jsxs8(Box8, {
+        flexDirection: "column", marginBottom: 1, children: [
+      /* @__PURE__ */ jsxs8(Box8, {
+          justifyContent: "space-between", children: [
+        /* @__PURE__ */ jsxs8(Text8, {
+            bold: true, color: activeField === "body" ? "cyan" : "white", children: [
+              activeField === "body" ? "\u276F " : "  ",
+              "Request Body (JSON):"
+            ]
+          }),
         /* @__PURE__ */ jsx9(Text8, { color: "gray", children: isEditingBody ? /* @__PURE__ */ jsx9(Text8, { color: "green", children: "Editing... (Press Esc when done)" }) : "Press Enter to edit" })
-      ] }),
+          ]
+        }),
       /* @__PURE__ */ jsx9(
+          Box8,
+          {
+            borderStyle: "single",
+            borderColor: isEditingBody ? "green" : activeField === "body" ? "cyan" : "gray",
+            paddingX: 1,
+            minHeight: 5,
+            children: /* @__PURE__ */ jsxs8(Text8, {
+              color: jsonError ? "red" : "white", children: [
+                bodyText || "(empty JSON body)",
+                isEditingBody && /* @__PURE__ */ jsx9(Text8, { color: "green", children: "\u2588" })
+              ]
+            })
+          }
+        ),
+          jsonError && /* @__PURE__ */ jsx9(Box8, {
+            children: /* @__PURE__ */ jsxs8(Text8, {
+              color: "red", children: [
+                "\u26A0 ",
+                jsonError
+              ]
+            })
+          })
+        ]
+      }),
+    /* @__PURE__ */ jsx9(
         Box8,
         {
-          borderStyle: "single",
-          borderColor: isEditingBody ? "green" : activeField === "body" ? "cyan" : "gray",
-          paddingX: 1,
-          minHeight: 5,
-          children: /* @__PURE__ */ jsxs8(Text8, { color: jsonError ? "red" : "white", children: [
-            bodyText || "(empty JSON body)",
-            isEditingBody && /* @__PURE__ */ jsx9(Text8, { color: "green", children: "\u2588" })
-          ] })
+          borderStyle: "double",
+          borderColor: activeField === "execute" ? "green" : "gray",
+          paddingX: 2,
+          marginTop: 1,
+          justifyContent: "center",
+          children: /* @__PURE__ */ jsx9(Text8, { bold: true, color: activeField === "execute" ? "green" : "white", children: activeField === "execute" ? "\u276F [ EXECUTE REQUEST ] \u276E" : "[ Execute Request ]" })
         }
-      ),
-      jsonError && /* @__PURE__ */ jsx9(Box8, { children: /* @__PURE__ */ jsxs8(Text8, { color: "red", children: [
-        "\u26A0 ",
-        jsonError
-      ] }) })
-    ] }),
-    /* @__PURE__ */ jsx9(
-      Box8,
-      {
-        borderStyle: "double",
-        borderColor: activeField === "execute" ? "green" : "gray",
-        paddingX: 2,
-        marginTop: 1,
-        justifyContent: "center",
-        children: /* @__PURE__ */ jsx9(Text8, { bold: true, color: activeField === "execute" ? "green" : "white", children: activeField === "execute" ? "\u276F [ EXECUTE REQUEST ] \u276E" : "[ Execute Request ]" })
-      }
-    )
-  ] });
+      )
+    ]
+  });
 };
 
 // src/tui/screens/ResponseViewerScreen.tsx
@@ -2728,17 +2874,22 @@ var ResponseViewerScreen = () => {
     const maxChars = 20;
     const count = total > 0 ? Math.max(1, Math.round(ms / total * maxChars)) : 1;
     const bar = "\u2588".repeat(count);
-    return /* @__PURE__ */ jsxs9(Box9, { justifyContent: "space-between", width: 40, children: [
+    return /* @__PURE__ */ jsxs9(Box9, {
+      justifyContent: "space-between", width: 40, children: [
       /* @__PURE__ */ jsx10(Text9, { color: "gray", children: label.padEnd(10) }),
       /* @__PURE__ */ jsx10(Text9, { color: "cyan", children: bar }),
-      /* @__PURE__ */ jsxs9(Text9, { bold: true, color: "white", children: [
-        " ",
-        ms,
-        "ms"
-      ] })
-    ] }, label);
+      /* @__PURE__ */ jsxs9(Text9, {
+        bold: true, color: "white", children: [
+          " ",
+          ms,
+          "ms"
+        ]
+      })
+      ]
+    }, label);
   };
-  return /* @__PURE__ */ jsxs9(Box9, { flexDirection: "column", paddingX: 1, children: [
+  return /* @__PURE__ */ jsxs9(Box9, {
+    flexDirection: "column", paddingX: 1, children: [
     /* @__PURE__ */ jsxs9(
       Box9,
       {
@@ -2747,31 +2898,44 @@ var ResponseViewerScreen = () => {
         paddingX: 1,
         justifyContent: "space-between",
         children: [
-          /* @__PURE__ */ jsxs9(Box9, { children: [
-            /* @__PURE__ */ jsxs9(Text9, { bold: true, color: getStatusColor(lastResponse.status), children: [
+          /* @__PURE__ */ jsxs9(Box9, {
+          children: [
+            /* @__PURE__ */ jsxs9(Text9, {
+            bold: true, color: getStatusColor(lastResponse.status), children: [
               lastResponse.status,
               " ",
               lastResponse.statusText || "OK"
-            ] }),
+            ]
+          }),
             /* @__PURE__ */ jsx10(Text9, { color: "gray", children: " \u2502 Time: " }),
-            /* @__PURE__ */ jsxs9(Text9, { bold: true, color: "white", children: [
+            /* @__PURE__ */ jsxs9(Text9, {
+            bold: true, color: "white", children: [
               lastResponse.timing.total,
               "ms"
-            ] }),
+            ]
+          }),
             /* @__PURE__ */ jsx10(Text9, { color: "gray", children: " \u2502 Size: " }),
-            /* @__PURE__ */ jsxs9(Text9, { bold: true, color: "white", children: [
+            /* @__PURE__ */ jsxs9(Text9, {
+            bold: true, color: "white", children: [
               (lastResponse.sizeBytes / 1024).toFixed(2),
               " KB"
-            ] })
-          ] }),
-          /* @__PURE__ */ jsx10(Box9, { children: /* @__PURE__ */ jsxs9(Text9, { color: "gray", children: [
-            "URL: ",
-            lastResponse.url.slice(0, 35)
-          ] }) })
+            ]
+          })
+          ]
+        }),
+          /* @__PURE__ */ jsx10(Box9, {
+          children: /* @__PURE__ */ jsxs9(Text9, {
+            color: "gray", children: [
+              "URL: ",
+              lastResponse.url.slice(0, 35)
+            ]
+          })
+        })
         ]
       }
     ),
-    /* @__PURE__ */ jsxs9(Box9, { marginY: 1, children: [
+    /* @__PURE__ */ jsxs9(Box9, {
+      marginY: 1, children: [
       /* @__PURE__ */ jsxs9(
         Text9,
         {
@@ -2813,7 +2977,8 @@ var ResponseViewerScreen = () => {
           children: "[4 Timeline]"
         }
       )
-    ] }),
+      ]
+    }),
     /* @__PURE__ */ jsxs9(
       Box9,
       {
@@ -2823,43 +2988,64 @@ var ResponseViewerScreen = () => {
         minHeight: 10,
         flexDirection: "column",
         children: [
-          activeTab === "pretty" && /* @__PURE__ */ jsx10(Box9, { flexDirection: "column", children: lastResponse.isJson && typeof lastResponse.data === "object" ? /* @__PURE__ */ jsxs9(Text9, { color: "white", children: [
-            JSON.stringify(lastResponse.data, null, 2).slice(0, 1500),
-            JSON.stringify(lastResponse.data).length > 1500 && /* @__PURE__ */ jsxs9(Text9, { color: "gray", children: [
-              "\n",
-              "... [Truncated for display; switch to Raw or export for full body]"
-            ] })
-          ] }) : /* @__PURE__ */ jsx10(Text9, { color: "white", children: lastResponse.rawData.slice(0, 1e3) }) }),
+          activeTab === "pretty" && /* @__PURE__ */ jsx10(Box9, {
+            flexDirection: "column", children: lastResponse.isJson && typeof lastResponse.data === "object" ? /* @__PURE__ */ jsxs9(Text9, {
+              color: "white", children: [
+                JSON.stringify(lastResponse.data, null, 2).slice(0, 1500),
+                JSON.stringify(lastResponse.data).length > 1500 && /* @__PURE__ */ jsxs9(Text9, {
+                  color: "gray", children: [
+                    "\n",
+                    "... [Truncated for display; switch to Raw or export for full body]"
+                  ]
+                })
+              ]
+            }) : /* @__PURE__ */ jsx10(Text9, { color: "white", children: lastResponse.rawData.slice(0, 1e3) })
+          }),
           activeTab === "raw" && /* @__PURE__ */ jsx10(Box9, { flexDirection: "column", children: /* @__PURE__ */ jsx10(Text9, { color: "gray", children: lastResponse.rawData.slice(0, 1500) }) }),
-          activeTab === "headers" && /* @__PURE__ */ jsx10(Box9, { flexDirection: "column", children: Object.entries(lastResponse.headers).map(([k, v]) => /* @__PURE__ */ jsxs9(Box9, { children: [
-            /* @__PURE__ */ jsxs9(Text9, { bold: true, color: "cyan", children: [
-              k,
-              ":",
-              " "
-            ] }),
+          activeTab === "headers" && /* @__PURE__ */ jsx10(Box9, {
+            flexDirection: "column", children: Object.entries(lastResponse.headers).map(([k, v]) => /* @__PURE__ */ jsxs9(Box9, {
+              children: [
+            /* @__PURE__ */ jsxs9(Text9, {
+                bold: true, color: "cyan", children: [
+                  k,
+                  ":",
+                  " "
+                ]
+              }),
             /* @__PURE__ */ jsx10(Text9, { color: "white", children: Array.isArray(v) ? v.join(", ") : v })
-          ] }, k)) }),
-          activeTab === "timeline" && /* @__PURE__ */ jsxs9(Box9, { flexDirection: "column", children: [
+              ]
+            }, k))
+          }),
+          activeTab === "timeline" && /* @__PURE__ */ jsxs9(Box9, {
+            flexDirection: "column", children: [
             /* @__PURE__ */ jsx10(Text9, { bold: true, color: "cyan", marginBottom: 1, children: "Request Latency Breakdown" }),
-            renderTimelineBar("DNS", lastResponse.timing.dns, lastResponse.timing.total),
-            renderTimelineBar("Connect", lastResponse.timing.tcp, lastResponse.timing.total),
-            renderTimelineBar("TLS", lastResponse.timing.tls, lastResponse.timing.total),
-            renderTimelineBar("Server TTFB", lastResponse.timing.ttfb, lastResponse.timing.total),
-            renderTimelineBar("Download", lastResponse.timing.download, lastResponse.timing.total),
-            /* @__PURE__ */ jsx10(Box9, { borderStyle: "single", borderColor: "gray", width: 40, marginTop: 1, paddingX: 1, children: /* @__PURE__ */ jsxs9(Text9, { bold: true, color: "green", children: [
-              "Total Latency: ",
-              lastResponse.timing.total,
-              "ms"
-            ] }) })
-          ] })
+              renderTimelineBar("DNS", lastResponse.timing.dns, lastResponse.timing.total),
+              renderTimelineBar("Connect", lastResponse.timing.tcp, lastResponse.timing.total),
+              renderTimelineBar("TLS", lastResponse.timing.tls, lastResponse.timing.total),
+              renderTimelineBar("Server TTFB", lastResponse.timing.ttfb, lastResponse.timing.total),
+              renderTimelineBar("Download", lastResponse.timing.download, lastResponse.timing.total),
+            /* @__PURE__ */ jsx10(Box9, {
+                borderStyle: "single", borderColor: "gray", width: 40, marginTop: 1, paddingX: 1, children: /* @__PURE__ */ jsxs9(Text9, {
+                  bold: true, color: "green", children: [
+                    "Total Latency: ",
+                    lastResponse.timing.total,
+                    "ms"
+                  ]
+                })
+              })
+            ]
+          })
         ]
       }
     ),
-    /* @__PURE__ */ jsxs9(Box9, { justifyContent: "space-between", marginTop: 1, children: [
+    /* @__PURE__ */ jsxs9(Box9, {
+      justifyContent: "space-between", marginTop: 1, children: [
       /* @__PURE__ */ jsx10(Text9, { color: "gray", children: "Use \u2190 \u2192 or 1-4 to switch tabs \u2502 [Esc] Back to Builder" }),
       /* @__PURE__ */ jsx10(Text9, { color: "gray", children: "[c] Code Generator" })
-    ] })
-  ] });
+      ]
+    })
+    ]
+  });
 };
 
 // src/tui/screens/HistoryScreen.tsx
@@ -2870,10 +3056,12 @@ var HistoryScreen = () => {
   const { historyItems, setScreen, executeRequest } = useApp();
   const [selectedIndex, setSelectedIndex] = useState7(0);
   if (historyItems.length === 0) {
-    return /* @__PURE__ */ jsxs10(Box10, { flexDirection: "column", padding: 1, children: [
+    return /* @__PURE__ */ jsxs10(Box10, {
+      flexDirection: "column", padding: 1, children: [
       /* @__PURE__ */ jsx11(Text10, { color: "yellow", children: "No request history recorded yet." }),
       /* @__PURE__ */ jsx11(Text10, { color: "gray", children: "Execute requests from the Explorer to build history." })
-    ] });
+      ]
+    });
   }
   useInput8((input, key) => {
     if (key.escape) {
@@ -2906,15 +3094,20 @@ var HistoryScreen = () => {
     if (s >= 400 && s < 500) return "yellow";
     return "red";
   };
-  return /* @__PURE__ */ jsxs10(Box10, { flexDirection: "column", paddingX: 1, children: [
-    /* @__PURE__ */ jsxs10(Box10, { justifyContent: "space-between", marginBottom: 1, children: [
-      /* @__PURE__ */ jsxs10(Text10, { bold: true, color: "cyan", children: [
-        "Request History (",
-        historyItems.length,
-        " items)"
-      ] }),
+  return /* @__PURE__ */ jsxs10(Box10, {
+    flexDirection: "column", paddingX: 1, children: [
+    /* @__PURE__ */ jsxs10(Box10, {
+      justifyContent: "space-between", marginBottom: 1, children: [
+      /* @__PURE__ */ jsxs10(Text10, {
+        bold: true, color: "cyan", children: [
+          "Request History (",
+          historyItems.length,
+          " items)"
+        ]
+      }),
       /* @__PURE__ */ jsx11(Text10, { color: "gray", children: "Press Enter to Replay \u2502 Esc to Back" })
-    ] }),
+      ]
+    }),
     /* @__PURE__ */ jsx11(
       Box10,
       {
@@ -2926,32 +3119,45 @@ var HistoryScreen = () => {
         children: historyItems.slice(0, 15).map((item, i) => {
           const isSelected = i === selectedIndex;
           const timeStr = new Date(item.timestamp).toLocaleTimeString();
-          return /* @__PURE__ */ jsxs10(Box10, { justifyContent: "space-between", children: [
-            /* @__PURE__ */ jsxs10(Box10, { children: [
+          return /* @__PURE__ */ jsxs10(Box10, {
+            justifyContent: "space-between", children: [
+            /* @__PURE__ */ jsxs10(Box10, {
+              children: [
               /* @__PURE__ */ jsx11(Text10, { color: isSelected ? "cyan" : "white", bold: isSelected, children: isSelected ? "\u276F " : "  " }),
-              /* @__PURE__ */ jsxs10(Text10, { color: "gray", children: [
-                timeStr,
-                " "
-              ] }),
+              /* @__PURE__ */ jsxs10(Text10, {
+                color: "gray", children: [
+                  timeStr,
+                  " "
+                ]
+              }),
               /* @__PURE__ */ jsx11(Text10, { bold: true, color: "cyan", children: item.method.padEnd(7) }),
               /* @__PURE__ */ jsx11(Text10, { color: "white", children: item.path.slice(0, 35) })
-            ] }),
-            /* @__PURE__ */ jsxs10(Box10, { children: [
-              /* @__PURE__ */ jsxs10(Text10, { bold: true, color: getStatusColor(item.status), children: [
-                item.status,
-                " "
-              ] }),
-              /* @__PURE__ */ jsxs10(Text10, { color: "gray", children: [
-                "(",
-                item.durationMs,
-                "ms)"
-              ] })
-            ] })
-          ] }, item.id);
+              ]
+            }),
+            /* @__PURE__ */ jsxs10(Box10, {
+              children: [
+              /* @__PURE__ */ jsxs10(Text10, {
+                bold: true, color: getStatusColor(item.status), children: [
+                  item.status,
+                  " "
+                ]
+              }),
+              /* @__PURE__ */ jsxs10(Text10, {
+                color: "gray", children: [
+                  "(",
+                  item.durationMs,
+                  "ms)"
+                ]
+              })
+              ]
+            })
+            ]
+          }, item.id);
         })
       }
     )
-  ] });
+    ]
+  });
 };
 
 // src/tui/screens/EnvironmentsScreen.tsx
@@ -2981,15 +3187,20 @@ var EnvironmentsScreen = () => {
       }
     }
   });
-  return /* @__PURE__ */ jsxs11(Box11, { flexDirection: "column", paddingX: 1, children: [
-    /* @__PURE__ */ jsxs11(Box11, { justifyContent: "space-between", marginBottom: 1, children: [
-      /* @__PURE__ */ jsxs11(Text11, { bold: true, color: "cyan", children: [
-        "Environments (",
-        environments.length,
-        ")"
-      ] }),
+  return /* @__PURE__ */ jsxs11(Box11, {
+    flexDirection: "column", paddingX: 1, children: [
+    /* @__PURE__ */ jsxs11(Box11, {
+      justifyContent: "space-between", marginBottom: 1, children: [
+      /* @__PURE__ */ jsxs11(Text11, {
+        bold: true, color: "cyan", children: [
+          "Environments (",
+          environments.length,
+          ")"
+        ]
+      }),
       /* @__PURE__ */ jsx12(Text11, { color: "gray", children: "Press Enter to Activate \u2502 Esc to Back" })
-    ] }),
+      ]
+    }),
     /* @__PURE__ */ jsx12(
       Box11,
       {
@@ -3001,18 +3212,23 @@ var EnvironmentsScreen = () => {
         children: environments.map((env, i) => {
           const isSelected = i === selectedIndex;
           const isActive = env.name === activeEnv.name;
-          return /* @__PURE__ */ jsxs11(Box11, { justifyContent: "space-between", marginY: 0, children: [
-            /* @__PURE__ */ jsxs11(Box11, { children: [
+          return /* @__PURE__ */ jsxs11(Box11, {
+            justifyContent: "space-between", marginY: 0, children: [
+            /* @__PURE__ */ jsxs11(Box11, {
+              children: [
               /* @__PURE__ */ jsx12(Text11, { color: isSelected ? "cyan" : "white", bold: isSelected, children: isSelected ? "\u276F " : "  " }),
               /* @__PURE__ */ jsx12(Text11, { bold: true, color: env.isProduction ? "red" : "green", children: env.name.padEnd(15) }),
               /* @__PURE__ */ jsx12(Text11, { color: "white", children: env.baseUrl })
-            ] }),
+              ]
+            }),
             /* @__PURE__ */ jsx12(Box11, { children: isActive ? /* @__PURE__ */ jsx12(Text11, { bold: true, color: "green", children: "[ACTIVE]" }) : /* @__PURE__ */ jsx12(Text11, { color: "gray", children: "[Inactive]" }) })
-          ] }, env.name);
+            ]
+          }, env.name);
         })
       }
     )
-  ] });
+    ]
+  });
 };
 
 // src/tui/screens/CollectionsScreen.tsx
@@ -3024,10 +3240,12 @@ var CollectionsScreen = () => {
   const [collections] = useState9(() => collectionManager.getCollections());
   const [selectedIndex, setSelectedIndex] = useState9(0);
   if (collections.length === 0) {
-    return /* @__PURE__ */ jsxs12(Box12, { flexDirection: "column", padding: 1, children: [
+    return /* @__PURE__ */ jsxs12(Box12, {
+      flexDirection: "column", padding: 1, children: [
       /* @__PURE__ */ jsx13(Text12, { color: "yellow", children: "No collections found." }),
       /* @__PURE__ */ jsx13(Text12, { color: "gray", children: 'Create collections with: apix collection create "My API"' })
-    ] });
+      ]
+    });
   }
   useInput10((input, key) => {
     if (key.escape) {
@@ -3043,15 +3261,20 @@ var CollectionsScreen = () => {
       return;
     }
   });
-  return /* @__PURE__ */ jsxs12(Box12, { flexDirection: "column", paddingX: 1, children: [
-    /* @__PURE__ */ jsxs12(Box12, { justifyContent: "space-between", marginBottom: 1, children: [
-      /* @__PURE__ */ jsxs12(Text12, { bold: true, color: "cyan", children: [
-        "Collections (",
-        collections.length,
-        ")"
-      ] }),
+  return /* @__PURE__ */ jsxs12(Box12, {
+    flexDirection: "column", paddingX: 1, children: [
+    /* @__PURE__ */ jsxs12(Box12, {
+      justifyContent: "space-between", marginBottom: 1, children: [
+      /* @__PURE__ */ jsxs12(Text12, {
+        bold: true, color: "cyan", children: [
+          "Collections (",
+          collections.length,
+          ")"
+        ]
+      }),
       /* @__PURE__ */ jsx13(Text12, { color: "gray", children: "Esc to Back" })
-    ] }),
+      ]
+    }),
     /* @__PURE__ */ jsx13(
       Box12,
       {
@@ -3062,22 +3285,29 @@ var CollectionsScreen = () => {
         minHeight: 10,
         children: collections.map((col, i) => {
           const isSelected = i === selectedIndex;
-          return /* @__PURE__ */ jsxs12(Box12, { justifyContent: "space-between", children: [
-            /* @__PURE__ */ jsxs12(Box12, { children: [
+          return /* @__PURE__ */ jsxs12(Box12, {
+            justifyContent: "space-between", children: [
+            /* @__PURE__ */ jsxs12(Box12, {
+              children: [
               /* @__PURE__ */ jsx13(Text12, { color: isSelected ? "cyan" : "white", bold: isSelected, children: isSelected ? "\u276F " : "  " }),
               /* @__PURE__ */ jsx13(Text12, { bold: true, color: "white", children: col.name }),
-              /* @__PURE__ */ jsxs12(Text12, { color: "gray", children: [
-                " (",
-                col.requests.length,
-                " requests)"
-              ] })
-            ] }),
+              /* @__PURE__ */ jsxs12(Text12, {
+                color: "gray", children: [
+                  " (",
+                  col.requests.length,
+                  " requests)"
+                ]
+              })
+              ]
+            }),
             /* @__PURE__ */ jsx13(Box12, { children: /* @__PURE__ */ jsx13(Text12, { color: "gray", children: col.description || "" }) })
-          ] }, col.id);
+            ]
+          }, col.id);
         })
       }
     )
-  ] });
+    ]
+  });
 };
 
 // src/tui/screens/CodeGenScreen.tsx
@@ -3123,34 +3353,43 @@ var CodeGenScreen = () => {
       return;
     }
   });
-  return /* @__PURE__ */ jsxs13(Box13, { flexDirection: "column", paddingX: 1, children: [
-    /* @__PURE__ */ jsxs13(Box13, { justifyContent: "space-between", marginBottom: 1, children: [
-      /* @__PURE__ */ jsxs13(Text13, { bold: true, color: "cyan", children: [
-        "Code Generator: ",
-        activeEndpoint.method,
-        " ",
-        activeEndpoint.path
-      ] }),
+  return /* @__PURE__ */ jsxs13(Box13, {
+    flexDirection: "column", paddingX: 1, children: [
+    /* @__PURE__ */ jsxs13(Box13, {
+      justifyContent: "space-between", marginBottom: 1, children: [
+      /* @__PURE__ */ jsxs13(Text13, {
+        bold: true, color: "cyan", children: [
+          "Code Generator: ",
+          activeEndpoint.method,
+          " ",
+          activeEndpoint.path
+        ]
+      }),
       /* @__PURE__ */ jsx14(Text13, { color: "gray", children: "\u2190 \u2192 to change language \u2502 Esc to Back" })
-    ] }),
-    /* @__PURE__ */ jsx14(Box13, { marginBottom: 1, flexWrap: "wrap", children: languages.map((lang, i) => {
-      const isSelected = i === selectedLangIndex;
-      return /* @__PURE__ */ jsx14(Box13, { marginRight: 1, children: /* @__PURE__ */ jsxs13(
-        Text13,
-        {
-          color: isSelected ? "black" : "cyan",
-          backgroundColor: isSelected ? "cyan" : void 0,
-          bold: isSelected,
-          children: [
-            " ",
-            "[",
-            lang.toUpperCase(),
-            "]",
-            " "
-          ]
-        }
-      ) }, lang);
-    }) }),
+      ]
+    }),
+    /* @__PURE__ */ jsx14(Box13, {
+      marginBottom: 1, flexWrap: "wrap", children: languages.map((lang, i) => {
+        const isSelected = i === selectedLangIndex;
+        return /* @__PURE__ */ jsx14(Box13, {
+          marginRight: 1, children: /* @__PURE__ */ jsxs13(
+            Text13,
+            {
+              color: isSelected ? "black" : "cyan",
+              backgroundColor: isSelected ? "cyan" : void 0,
+              bold: isSelected,
+              children: [
+                " ",
+                "[",
+                lang.toUpperCase(),
+                "]",
+                " "
+              ]
+            }
+          )
+        }, lang);
+      })
+    }),
     /* @__PURE__ */ jsx14(
       Box13,
       {
@@ -3162,7 +3401,8 @@ var CodeGenScreen = () => {
         children: /* @__PURE__ */ jsx14(Text13, { color: "white", children: code })
       }
     )
-  ] });
+    ]
+  });
 };
 
 // src/tui/app.tsx
@@ -3181,30 +3421,36 @@ var TuiMain = () => {
       process.exit(0);
     }
   });
-  return /* @__PURE__ */ jsxs14(Box14, { flexDirection: "column", minHeight: 20, padding: 1, children: [
+  return /* @__PURE__ */ jsxs14(Box14, {
+    flexDirection: "column", minHeight: 20, padding: 1, children: [
     /* @__PURE__ */ jsx15(Header, {}),
-    /* @__PURE__ */ jsxs14(Box14, { flexDirection: "column", flexGrow: 1, children: [
-      screen === "dashboard" && /* @__PURE__ */ jsx15(DashboardScreen, {}),
-      screen === "explorer" && /* @__PURE__ */ jsx15(ExplorerScreen, {}),
-      screen === "details" && /* @__PURE__ */ jsx15(EndpointDetailScreen, {}),
-      screen === "builder" && /* @__PURE__ */ jsx15(RequestBuilderScreen, {}),
-      screen === "response" && /* @__PURE__ */ jsx15(ResponseViewerScreen, {}),
-      screen === "history" && /* @__PURE__ */ jsx15(HistoryScreen, {}),
-      screen === "environments" && /* @__PURE__ */ jsx15(EnvironmentsScreen, {}),
-      screen === "collections" && /* @__PURE__ */ jsx15(CollectionsScreen, {}),
-      screen === "code-gen" && /* @__PURE__ */ jsx15(CodeGenScreen, {})
-    ] }),
-    showPalette && /* @__PURE__ */ jsx15(Box14, { position: "absolute", marginTop: 3, marginLeft: 4, children: /* @__PURE__ */ jsx15(CommandPalette, { onClose: () => setShowPalette(false) }) }),
-    warningModal && /* @__PURE__ */ jsx15(Box14, { position: "absolute", marginTop: 4, marginLeft: 6, children: /* @__PURE__ */ jsx15(
-      ProductionWarning,
-      {
-        message: warningModal.message,
-        onConfirm: warningModal.onConfirm,
-        onCancel: warningModal.onCancel
-      }
-    ) }),
+    /* @__PURE__ */ jsxs14(Box14, {
+      flexDirection: "column", flexGrow: 1, children: [
+        screen === "dashboard" && /* @__PURE__ */ jsx15(DashboardScreen, {}),
+        screen === "explorer" && /* @__PURE__ */ jsx15(ExplorerScreen, {}),
+        screen === "details" && /* @__PURE__ */ jsx15(EndpointDetailScreen, {}),
+        screen === "builder" && /* @__PURE__ */ jsx15(RequestBuilderScreen, {}),
+        screen === "response" && /* @__PURE__ */ jsx15(ResponseViewerScreen, {}),
+        screen === "history" && /* @__PURE__ */ jsx15(HistoryScreen, {}),
+        screen === "environments" && /* @__PURE__ */ jsx15(EnvironmentsScreen, {}),
+        screen === "collections" && /* @__PURE__ */ jsx15(CollectionsScreen, {}),
+        screen === "code-gen" && /* @__PURE__ */ jsx15(CodeGenScreen, {})
+      ]
+    }),
+      showPalette && /* @__PURE__ */ jsx15(Box14, { position: "absolute", marginTop: 3, marginLeft: 4, children: /* @__PURE__ */ jsx15(CommandPalette, { onClose: () => setShowPalette(false) }) }),
+      warningModal && /* @__PURE__ */ jsx15(Box14, {
+        position: "absolute", marginTop: 4, marginLeft: 6, children: /* @__PURE__ */ jsx15(
+          ProductionWarning,
+          {
+            message: warningModal.message,
+            onConfirm: warningModal.onConfirm,
+            onCancel: warningModal.onCancel
+          }
+        )
+      }),
     /* @__PURE__ */ jsx15(StatusBar, {})
-  ] });
+    ]
+  });
 };
 var App = ({ initialUrl }) => {
   return /* @__PURE__ */ jsx15(AppProvider, { initialUrl, children: /* @__PURE__ */ jsx15(TuiMain, {}) });
@@ -4142,7 +4388,7 @@ var ApixFormatParser = class {
       schemas: {}
     };
   }
-  static generateSampleApixYaml(name = "Homely API") {
+  static generateSampleApixYaml(name = "gas API") {
     const sample = {
       version: 1,
       name,

@@ -127,7 +127,7 @@ export class ApixFormatParser {
     };
   }
 
-  public static generateSampleApixYaml(name: string = 'Homely API'): string {
+  public static generateSampleApixYaml(name: string = 'gas API'): string {
     const sample: ApixFileSchema = {
       version: 1,
       name,

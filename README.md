@@ -19,6 +19,7 @@ APiX turns APIs into version-controlled, executable developer experiences.
 ```
 
 ### 1. APiX CLI (`apix-cli`)
+
 - Interactive Terminal UI (built with React & Ink)
 - Connect to any API (`apix connect http://localhost:4000`)
 - Direct command execution (`apix run /users`, `apix GET http://localhost:4000/users`)
@@ -29,11 +30,12 @@ APiX turns APIs into version-controlled, executable developer experiences.
 - Local mock server (`apix mock openapi.json`)
 
 ### 2. The `.apix` Project File Format
+
 Human-readable, Git-versionable YAML specification (`api.apix`):
 
 ```yaml
 version: 1
-name: Homely API
+name: gas API
 baseUrl: "{{baseUrl}}"
 
 environments:
@@ -69,12 +71,14 @@ workflows:
 ```
 
 ### 3. APiX VS Code Extension (`vscode-extension/`)
+
 - Language association & syntax highlighting for `.apix` files.
 - CodeLens action buttons directly inside `.apix` project files:
   `▶ Run Request │ Copy cURL │ Generate Code`
 - Side-by-side webview response viewer panel.
 
 ### 4. APiX Website (`website/`)
+
 - Clean, monochrome (Black + White + Neutral Gray) developer launch page, documentation, and terminal showcases.
 - Free of purple/cyan AI gradients, focusing on large typography, monospace preview blocks, and whitespace.
 

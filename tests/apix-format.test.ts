@@ -6,22 +6,22 @@ import os from 'node:os';
 
 describe('ApixFormatParser', () => {
   it('generates, parses, and converts sample .apix YAML file', () => {
-    const yamlStr = ApixFormatParser.generateSampleApixYaml('Homely API');
-    expect(yamlStr).toContain('name: Homely API');
+    const yamlStr = ApixFormatParser.generateSampleApixYaml('gas API');
+    expect(yamlStr).toContain('name: gas API');
 
     const parsed = ApixFormatParser.parseYaml(yamlStr);
-    expect(parsed.name).toBe('Homely API');
+    expect(parsed.name).toBe('gas API');
     expect(parsed.requests?.length).toBe(3);
 
     const spec = ApixFormatParser.convertToApiSpec(parsed);
-    expect(spec.title).toBe('Homely API');
+    expect(spec.title).toBe('gas API');
     expect(spec.endpoints.length).toBe(3);
   });
 
   it('saves and loads .apix files from disk', async () => {
     const testFile = path.join(os.tmpdir(), `test_${Date.now()}.apix`);
     const yamlStr = ApixFormatParser.generateSampleApixYaml('Disk Test');
-    
+
     await ApixFormatParser.saveFile(testFile, ApixFormatParser.parseYaml(yamlStr));
     const loaded = await ApixFormatParser.loadFile(testFile);
 

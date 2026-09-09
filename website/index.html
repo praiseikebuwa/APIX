@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>APiX — The Executable Interface for Your APIs</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
   <style>
     :root {
       --bg: #000000;
@@ -17,7 +20,13 @@
       --border: #333333;
       --accent: #ffffff;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
       background-color: var(--bg);
       color: var(--text);
@@ -25,23 +34,52 @@
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
     }
-    .mono { font-family: 'JetBrains Mono', monospace; }
-    .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
-    
+
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
     /* Header */
     header {
       border-bottom: 1px solid var(--card-border);
       padding: 1.5rem 0;
       position: sticky;
       top: 0;
-      background: rgba(0,0,0,0.85);
+      background: rgba(0, 0, 0, 0.85);
       backdrop-filter: blur(12px);
       z-index: 100;
     }
-    .nav { display: flex; justify-content: space-between; align-items: center; }
-    .logo { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.04em; }
-    .nav-links a { color: var(--text-muted); text-decoration: none; margin-left: 2rem; font-size: 0.95rem; transition: color 0.2s; }
-    .nav-links a:hover { color: var(--text); }
+
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      margin-left: 2rem;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
     .btn {
       display: inline-block;
       background: #ffffff;
@@ -53,18 +91,43 @@
       font-size: 0.9rem;
       transition: background 0.2s;
     }
-    .btn:hover { background: #e2e2e2; }
+
+    .btn:hover {
+      background: #e2e2e2;
+    }
+
     .btn-outline {
       background: transparent;
       color: #ffffff;
       border: 1px solid var(--border);
     }
-    .btn-outline:hover { border-color: #ffffff; background: #111111; }
+
+    .btn-outline:hover {
+      border-color: #ffffff;
+      background: #111111;
+    }
 
     /* Hero */
-    .hero { padding: 8rem 0 5rem; text-align: center; }
-    .hero h1 { font-size: 4rem; font-weight: 800; letter-spacing: -0.05em; line-height: 1.1; margin-bottom: 1.5rem; }
-    .hero p { font-size: 1.3rem; color: var(--text-muted); max-width: 680px; margin: 0 auto 2.5rem; font-weight: 400; }
+    .hero {
+      padding: 8rem 0 5rem;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 4rem;
+      font-weight: 800;
+      letter-spacing: -0.05em;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero p {
+      font-size: 1.3rem;
+      color: var(--text-muted);
+      max-width: 680px;
+      margin: 0 auto 2.5rem;
+      font-weight: 400;
+    }
 
     /* Terminal Preview */
     .terminal {
@@ -72,11 +135,12 @@
       border: 1px solid var(--card-border);
       border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
       max-width: 850px;
       margin: 0 auto 6rem;
       text-align: left;
     }
+
     .terminal-header {
       background: #111111;
       padding: 0.75rem 1rem;
@@ -84,29 +148,80 @@
       display: flex;
       gap: 8px;
     }
-    .dot { width: 12px; height: 12px; border-radius: 50%; background: #333333; }
-    .terminal-body { padding: 1.5rem; font-size: 0.95rem; line-height: 1.8; color: #cccccc; }
-    .prompt { color: #888888; }
-    .command { color: #ffffff; font-weight: 600; }
-    .green { color: #22c55e; }
-    .cyan { color: #38bdf8; }
-    .gray { color: #666666; }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #333333;
+    }
+
+    .terminal-body {
+      padding: 1.5rem;
+      font-size: 0.95rem;
+      line-height: 1.8;
+      color: #cccccc;
+    }
+
+    .prompt {
+      color: #888888;
+    }
+
+    .command {
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .green {
+      color: #22c55e;
+    }
+
+    .cyan {
+      color: #38bdf8;
+    }
+
+    .gray {
+      color: #666666;
+    }
 
     /* Grid */
-    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 6rem; }
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-bottom: 6rem;
+    }
+
     .card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 10px;
       padding: 2rem;
     }
-    .card h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem; letter-spacing: -0.02em; }
-    .card p { color: var(--text-muted); font-size: 0.95rem; }
+
+    .card h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.02em;
+    }
+
+    .card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
 
     /* Footer */
-    footer { border-top: 1px solid var(--card-border); padding: 3rem 0; text-align: center; color: var(--text-muted); font-size: 0.9rem; }
+    footer {
+      border-top: 1px solid var(--card-border);
+      padding: 3rem 0;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
   </style>
 </head>
+
 <body>
   <header>
     <div class="container nav">
@@ -124,7 +239,8 @@
     <section class="hero">
       <div class="container">
         <h1>APIs should be executable.</h1>
-        <p>Connect any API, discover what it can do, generate commands, and execute operations directly from your terminal or editor.</p>
+        <p>Connect any API, discover what it can do, generate commands, and execute operations directly from your
+          terminal or editor.</p>
         <div>
           <a href="#docs" class="btn" style="margin-right: 1rem;">Install CLI</a>
           <a href="#apix-format" class="btn btn-outline">Explore .apix Format</a>
@@ -141,34 +257,39 @@
         </div>
         <div class="terminal-body mono">
           <div><span class="prompt">$</span> <span class="command">apix connect http://localhost:4000</span></div>
-          <div class="green">✓ Connected to Homely API (localhost:4000)</div>
+          <div class="green">✓ Connected to gas API (localhost:4000)</div>
           <div class="green">✓ OpenAPI 3.1 specification detected (47 endpoints)</div>
           <div class="gray">──────────────────────────────────────────────────</div>
-          <div><span class="cyan">❯ GET    /users</span>           <span class="gray">List all users</span></div>
-          <div>  GET    /users/:id       <span class="gray">Retrieve user by ID</span></div>
-          <div>  POST   /users           <span class="gray">Create a new user</span></div>
-          <div>  DELETE /users/:id       <span class="gray">Delete user</span></div>
+          <div><span class="cyan">❯ GET /users</span> <span class="gray">List all users</span></div>
+          <div> GET /users/:id <span class="gray">Retrieve user by ID</span></div>
+          <div> POST /users <span class="gray">Create a new user</span></div>
+          <div> DELETE /users/:id <span class="gray">Delete user</span></div>
           <div class="gray">──────────────────────────────────────────────────</div>
-          <div>Press <span class="cyan">Enter</span> to build request │ <span class="cyan">Ctrl+P</span> for Command Palette</div>
+          <div>Press <span class="cyan">Enter</span> to build request │ <span class="cyan">Ctrl+P</span> for Command
+            Palette</div>
         </div>
       </div>
 
       <section id="features" class="features">
         <div class="card">
           <h3>Terminal-Native TUI</h3>
-          <p>Built with React &amp; Ink. Features socket-level DNS/TLS metrics, interactive parameter editors, pretty JSON viewers, and production safety guards.</p>
+          <p>Built with React &amp; Ink. Features socket-level DNS/TLS metrics, interactive parameter editors, pretty
+            JSON viewers, and production safety guards.</p>
         </div>
         <div class="card">
           <h3>.apix Project Format</h3>
-          <p>A single human-readable YAML file containing API endpoints, environments, auth profiles, saved requests, workflows, and contract assertions.</p>
+          <p>A single human-readable YAML file containing API endpoints, environments, auth profiles, saved requests,
+            workflows, and contract assertions.</p>
         </div>
         <div class="card">
           <h3>10-Language Generator</h3>
-          <p>Instantly converts any discovered operation into syntactically valid code snippets for cURL, JavaScript, TypeScript, Python, Go, Rust, and more.</p>
+          <p>Instantly converts any discovered operation into syntactically valid code snippets for cURL, JavaScript,
+            TypeScript, Python, Go, Rust, and more.</p>
         </div>
         <div class="card">
           <h3>VS Code &amp; CI Integration</h3>
-          <p>Execute requests directly inside VS Code with CodeLens <code>▶ Run Request</code> or automate API contract testing in GitHub Actions with <code>apix test --ci</code>.</p>
+          <p>Execute requests directly inside VS Code with CodeLens <code>▶ Run Request</code> or automate API contract
+            testing in GitHub Actions with <code>apix test --ci</code>.</p>
         </div>
       </section>
 
@@ -176,26 +297,27 @@
         <div class="card" style="padding: 3rem;">
           <h2 style="font-size: 2rem; font-weight: 800; margin-bottom: 1rem;">Introduce .apix</h2>
           <p style="color: var(--text-muted); margin-bottom: 2rem; max-width: 600px;">
-            One version-controlled file for your entire API lifecycle. Commit <code>api.apix</code> to Git to share workflows, tests, and requests across your development team.
+            One version-controlled file for your entire API lifecycle. Commit <code>api.apix</code> to Git to share
+            workflows, tests, and requests across your development team.
           </p>
           <div class="terminal" style="margin: 0;">
             <div class="terminal-body mono" style="background: #000000; font-size: 0.9rem;">
-<span class="gray"># api.apix</span>
-version: 1
-name: Homely API
-baseUrl: "{{baseUrl}}"
+              <span class="gray"># api.apix</span>
+              version: 1
+              name: gas API
+              baseUrl: "{{baseUrl}}"
 
-environments:
-  development:
-    baseUrl: "http://localhost:4000"
+              environments:
+              development:
+              baseUrl: "http://localhost:4000"
 
-requests:
-  - name: List Users
-    method: GET
-    path: /users
-    tests:
-      - expect:
-          status: 200
+              requests:
+              - name: List Users
+              method: GET
+              path: /users
+              tests:
+              - expect:
+              status: 200
             </div>
           </div>
         </div>
@@ -203,8 +325,10 @@ requests:
 
       <section id="docs" style="margin-bottom: 8rem; text-align: center;">
         <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem;">Get Started in Seconds</h2>
-        <p style="color: var(--text-muted); margin-bottom: 2rem;">Install APiX via npm and start exploring APIs immediately.</p>
-        <div class="terminal mono" style="max-width: 500px; margin: 0 auto; text-align: center; padding: 1.5rem; background: #000;">
+        <p style="color: var(--text-muted); margin-bottom: 2rem;">Install APiX via npm and start exploring APIs
+          immediately.</p>
+        <div class="terminal mono"
+          style="max-width: 500px; margin: 0 auto; text-align: center; padding: 1.5rem; background: #000;">
           <span class="prompt">$</span> <span class="command">npm install -g apix-cli</span>
         </div>
       </section>
@@ -217,4 +341,5 @@ requests:
     </div>
   </footer>
 </body>
+
 </html>

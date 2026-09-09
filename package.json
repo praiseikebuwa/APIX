@@ -1,6 +1,6 @@
 {
   "name": "@praiseikebuwa/apix-cli",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "APiX: Universal terminal-native API exploration, testing, and automation platform",
   "publishConfig": {
     "access": "public"
