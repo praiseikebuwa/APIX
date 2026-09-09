@@ -58,18 +58,18 @@ function maskBody(body) {
   if (Array.isArray(body)) {
     return body.map(maskBody);
   }
-  const result = {};
+  const result2 = {};
   const sensitiveKeys = ["password", "secret", "token", "apiKey", "access_token", "refresh_token", "private_key"];
   for (const [key, val] of Object.entries(body)) {
     if (sensitiveKeys.some((k) => key.toLowerCase().includes(k))) {
-      result[key] = typeof val === "string" ? maskSecret(val) : "******";
+      result2[key] = typeof val === "string" ? maskSecret(val) : "******";
     } else if (typeof val === "object" && val !== null) {
-      result[key] = maskBody(val);
+      result2[key] = maskBody(val);
     } else {
-      result[key] = val;
+      result2[key] = val;
     }
   }
-  return result;
+  return result2;
 }
 var ANSI_REGEX = /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g;
 var CONTROL_CHARS_REGEX = /[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g;
@@ -613,14 +613,56 @@ var SafeProber = class _SafeProber {
   static SAFE_PROBE_PATHS = [
     "/",
     "/health",
+    "/healthz",
     "/status",
     "/ping",
+    "/info",
+    "/metrics",
     "/api",
     "/api/v1",
+    "/v1",
+    "/api/v2",
+    "/v2",
+    "/users",
+    "/user",
+    "/api/users",
+    "/auth",
+    "/login",
+    "/register",
+    "/items",
+    "/products",
+    "/orders",
+    "/posts",
+    "/comments",
     "/docs"
   ];
   constructor(client) {
     this.client = client || new HttpClient();
+  }
+  getDefaultResponses(method) {
+    switch (method) {
+      case "POST":
+        return [
+          { statusCode: 201, description: "Created", contentType: "application/json" },
+          { statusCode: 400, description: "Bad Request", contentType: "application/json" }
+        ];
+      case "PUT":
+      case "PATCH":
+        return [
+          { statusCode: 200, description: "OK", contentType: "application/json" },
+          { statusCode: 400, description: "Bad Request", contentType: "application/json" }
+        ];
+      case "DELETE":
+        return [
+          { statusCode: 204, description: "No Content" },
+          { statusCode: 404, description: "Not Found" }
+        ];
+      default:
+        return [
+          { statusCode: 200, description: "OK", contentType: "application/json" },
+          { statusCode: 404, description: "Not Found", contentType: "application/json" }
+        ];
+    }
   }
   async probe(baseUrlStr, insecure = false) {
     const baseUrl = baseUrlStr.replace(/\/$/, "");
@@ -655,7 +697,7 @@ var SafeProber = class _SafeProber {
                 summary: `${m} Root Endpoint`,
                 tags: ["Discovered"],
                 parameters: [],
-                responses: [],
+                responses: this.getDefaultResponses(m),
                 source: "DISCOVERED"
               });
             }
@@ -681,28 +723,75 @@ var SafeProber = class _SafeProber {
           if (!poweredByHeader && resp.headers["x-powered-by"]) {
             poweredByHeader = resp.headers["x-powered-by"];
           }
-          if (p === "/health" || p === "/status" || p === "/ping") {
+          if (p === "/health" || p === "/healthz" || p === "/status" || p === "/ping") {
             healthStatus = `HTTP ${resp.status} ${resp.statusText}`;
           }
+          const segments = p.split("/").filter(Boolean);
+          const tag = segments.length > 0 ? segments[0].charAt(0).toUpperCase() + segments[0].slice(1) : "Discovered";
           const exists = discoveredEndpoints.some((e) => e.path === p && e.method === "GET");
           if (!exists) {
+            const isListEndpoint = Array.isArray(resp.data);
+            const queryParams = isListEndpoint ? [
+              { name: "limit", in: "query", required: false, description: "Max items to return", schema: { type: "integer" } },
+              { name: "page", in: "query", required: false, description: "Page number", schema: { type: "integer" } }
+            ] : [];
             discoveredEndpoints.push({
               id: `get_${p.replace(/[^a-zA-Z0-9]/g, "_")}`,
               method: "GET",
               path: p,
               summary: `${p === "/" ? "Root" : p} Endpoint`,
-              tags: [p.includes("health") || p.includes("status") || p.includes("ping") ? "Health" : "Discovered"],
-              parameters: [],
+              tags: [tag],
+              parameters: queryParams,
               responses: [
                 {
                   statusCode: resp.status,
-                  description: resp.statusText,
-                  contentType: resp.contentType,
+                  description: resp.statusText || "OK",
+                  contentType: resp.contentType || "application/json",
                   example: resp.isJson ? resp.data : void 0
                 }
               ],
               source: "DISCOVERED"
             });
+            if (segments.length === 1 && !["health", "status", "ping", "docs", "metrics", "info"].includes(segments[0])) {
+              const singular = segments[0];
+              if (!discoveredEndpoints.some((e) => e.path === p && e.method === "POST")) {
+                let sampleBody = {};
+                if (isListEndpoint && resp.data.length > 0 && typeof resp.data[0] === "object") {
+                  const { id, _id, createdAt, updatedAt, ...rest } = resp.data[0];
+                  sampleBody = rest;
+                }
+                discoveredEndpoints.push({
+                  id: `post_${singular}`,
+                  method: "POST",
+                  path: p,
+                  summary: `Create ${singular}`,
+                  tags: [tag],
+                  parameters: [],
+                  requestBody: {
+                    contentType: "application/json",
+                    description: `Payload for creating ${singular}`,
+                    example: sampleBody
+                  },
+                  responses: this.getDefaultResponses("POST"),
+                  source: "DISCOVERED"
+                });
+              }
+              const itemPath = `${p}/{id}`;
+              if (!discoveredEndpoints.some((e) => e.path === itemPath && e.method === "GET")) {
+                discoveredEndpoints.push({
+                  id: `get_${singular}_by_id`,
+                  method: "GET",
+                  path: itemPath,
+                  summary: `Get ${singular} by ID`,
+                  tags: [tag],
+                  parameters: [
+                    { name: "id", in: "path", required: true, description: `${singular} identifier`, schema: { type: "string" } }
+                  ],
+                  responses: this.getDefaultResponses("GET"),
+                  source: "DISCOVERED"
+                });
+              }
+            }
           }
         }
       } catch {
@@ -911,11 +1000,11 @@ var EnvManager = class {
       return obj.map((item) => this.interpolateObject(item, extraVariables));
     }
     if (typeof obj === "object") {
-      const result = {};
+      const result2 = {};
       for (const [k, v] of Object.entries(obj)) {
-        result[k] = this.interpolateObject(v, extraVariables);
+        result2[k] = this.interpolateObject(v, extraVariables);
       }
-      return result;
+      return result2;
     }
     return obj;
   }
@@ -4274,12 +4363,20 @@ Types:     ${info.types.length}`,
     await envManager.init();
     const targetUrl = urlArg || envManager.getActiveEnvironment().baseUrl;
     const discovery = new OpenApiDiscovery();
-    const result = await discovery.discover(targetUrl);
-    if (!result) {
-      console.log(chalk.yellow(`No OpenAPI spec found at ${targetUrl} to explain.`));
+    const openApiResult = await discovery.discover(targetUrl);
+    let targetSpec = openApiResult?.spec || null;
+    if (!targetSpec) {
+      const prober = new SafeProber();
+      const probeResult = await prober.probe(targetUrl);
+      if (probeResult.isReachable) {
+        targetSpec = prober.createInferredSpec(probeResult);
+      }
+    }
+    if (!targetSpec) {
+      console.log(chalk.yellow(`Could not connect to target API at ${targetUrl}. Is the server running?`));
       return;
     }
-    const report = await ApiExplainer.explain(result.spec);
+    const report = await ApiExplainer.explain(targetSpec);
     console.log(boxen(
       `${chalk.bold("API ANALYSIS REPORT")}
 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
@@ -4401,12 +4498,20 @@ Code:    ${err.code || "UNKNOWN"}`,
     await authManager.init();
     const targetUrl = options.url || envManager.getActiveEnvironment().baseUrl;
     const discovery = new OpenApiDiscovery();
-    const result = await discovery.discover(targetUrl);
-    if (!result) {
-      console.log(chalk.yellow(`No OpenAPI spec found at ${targetUrl} to interpret natural language query.`));
+    const openApiResult = await discovery.discover(targetUrl);
+    let targetSpec = openApiResult?.spec || null;
+    if (!targetSpec) {
+      const prober = new SafeProber();
+      const probeResult = await prober.probe(targetUrl);
+      if (probeResult.isReachable) {
+        targetSpec = prober.createInferredSpec(probeResult);
+      }
+    }
+    if (!targetSpec) {
+      console.log(chalk.yellow(`Could not connect to target API at ${targetUrl}.`));
       return;
     }
-    const proposal = NlRequestBuilder.proposeRequest(query, result.spec);
+    const proposal = NlRequestBuilder.proposeRequest(query, targetSpec);
     if (!proposal) {
       console.log(chalk.red(`Could not map query "${query}" to an endpoint.`));
       return;
@@ -4450,13 +4555,21 @@ Status: ${resp.status} ${resp.statusText} (${resp.timing.total}ms)
     await envManager.init();
     const targetUrl = urlArg || envManager.getActiveEnvironment().baseUrl;
     const discovery = new OpenApiDiscovery();
-    const result = await discovery.discover(targetUrl, options?.openapi);
-    if (!result) {
-      console.log(chalk.yellow(`No OpenAPI spec found at ${targetUrl}. Run "apix connect" for probing.`));
+    const openApiResult = await discovery.discover(targetUrl, options?.openapi);
+    let targetSpec = openApiResult?.spec || null;
+    if (!targetSpec) {
+      const prober = new SafeProber();
+      const probeResult = await prober.probe(targetUrl);
+      if (probeResult.isReachable) {
+        targetSpec = prober.createInferredSpec(probeResult);
+      }
+    }
+    if (!targetSpec) {
+      console.log(chalk.yellow(`Could not connect to target API at ${targetUrl}.`));
       return;
     }
     console.log(chalk.bold(`
-${result.spec.title} (v${result.spec.version}) - ${result.spec.endpoints.length} Endpoints
+${targetSpec.title} (${targetSpec.version}) - ${targetSpec.endpoints.length} Endpoints
 `));
     const table = new Table({
       head: [chalk.cyan("Method"), chalk.cyan("Path"), chalk.cyan("Tag"), chalk.cyan("Summary")],
@@ -4473,13 +4586,13 @@ ${result.spec.title} (v${result.spec.version}) - ${result.spec.endpoints.length}
     await envManager.init();
     const targetUrl = options?.url || envManager.getActiveEnvironment().baseUrl;
     const discovery = new OpenApiDiscovery();
-    const result = await discovery.discover(targetUrl);
-    if (!result) {
+    const result2 = await discovery.discover(targetUrl);
+    if (!result2) {
       console.log(chalk.yellow("No active API spec found to search."));
       return;
     }
     const q = query.toLowerCase();
-    const matches = result.spec.endpoints.filter(
+    const matches = result2.spec.endpoints.filter(
       (e) => e.path.toLowerCase().includes(q) || e.method.toLowerCase().includes(q) || e.summary && e.summary.toLowerCase().includes(q) || e.parameters.some((p) => p.name.toLowerCase().includes(q))
     );
     console.log(chalk.cyan(`Found ${matches.length} matches for "${query}":
@@ -4558,8 +4671,8 @@ Request failed: ${err.message}`));
     await envManager.init();
     const targetUrl = target || envManager.getActiveEnvironment().baseUrl;
     const discovery = new OpenApiDiscovery();
-    const result = await discovery.discover(targetUrl);
-    if (!result) {
+    const result2 = await discovery.discover(targetUrl);
+    if (!result2) {
       console.log(chalk.yellow(`No OpenAPI spec available at ${targetUrl} for contract testing.`));
       if (options?.ci) process.exit(1);
       return;
@@ -4567,11 +4680,11 @@ Request failed: ${err.message}`));
     const client = new HttpClient();
     let passed = 0;
     let failed = 0;
-    for (const ep of result.spec.endpoints.slice(0, 5)) {
+    for (const ep of result2.spec.endpoints.slice(0, 5)) {
       if (ep.method === "GET" && !ep.parameters.some((p) => p.required)) {
         try {
           const resp = await client.request({
-            url: `${result.spec.baseUrl}${ep.path}`,
+            url: `${result2.spec.baseUrl}${ep.path}`,
             method: "GET",
             timeoutMs: 5e3
           });
@@ -4706,12 +4819,20 @@ Recent Request History (${items.length} items):
     await envManager.init();
     const targetUrl = target || envManager.getActiveEnvironment().baseUrl;
     const discovery = new OpenApiDiscovery();
-    const result = await discovery.discover(targetUrl);
-    if (!result) {
-      console.log(chalk.yellow("No OpenAPI spec found to analyze."));
+    const openApiResult = await discovery.discover(targetUrl);
+    let targetSpec = openApiResult?.spec || null;
+    if (!targetSpec) {
+      const prober = new SafeProber();
+      const probeResult = await prober.probe(targetUrl);
+      if (probeResult.isReachable) {
+        targetSpec = prober.createInferredSpec(probeResult);
+      }
+    }
+    if (!targetSpec) {
+      console.log(chalk.yellow(`Could not connect to target API at ${targetUrl}.`));
       return;
     }
-    const report = QualityAnalyzer.analyze(result.spec);
+    const report = QualityAnalyzer.analyze(targetSpec);
     console.log(boxen(
       `${chalk.bold("API QUALITY SCORE")}: ${report.score >= 80 ? chalk.green(`${report.score}/100`) : chalk.yellow(`${report.score}/100`)}
 
@@ -4770,4 +4891,4 @@ Press Ctrl+C to stop.`,
 export {
   createCli
 };
-//# sourceMappingURL=chunk-2HJDN3LW.js.map
+//# sourceMappingURL=chunk-XN65KFOA.js.map

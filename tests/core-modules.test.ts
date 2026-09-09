@@ -120,3 +120,51 @@ describe('QualityAnalyzer', () => {
     expect(report.documentationCoverage).toBe(100);
   });
 });
+
+describe('SafeProber & ApiExplainer', () => {
+  it('creates inferred spec and explains non-OpenAPI backend probe results', async () => {
+    const { SafeProber } = await import('../src/core/discovery/probing.js');
+    const { ApiExplainer } = await import('../src/core/analyze/api-explainer.js');
+
+    const prober = new SafeProber();
+    const inferredSpec = prober.createInferredSpec({
+      url: 'http://localhost:4000',
+      isReachable: true,
+      latencyMs: 15,
+      serverHeader: 'express',
+      tlsStatus: false,
+      discoveredEndpoints: [
+        {
+          id: 'get_root',
+          method: 'GET',
+          path: '/',
+          summary: 'Root Endpoint',
+          tags: ['Discovered'],
+          parameters: [],
+          responses: [{ statusCode: 200, description: 'OK' }],
+          source: 'DISCOVERED',
+        },
+        {
+          id: 'post_users',
+          method: 'POST',
+          path: '/users',
+          summary: 'Create User',
+          tags: ['Users'],
+          parameters: [],
+          responses: [{ statusCode: 201, description: 'Created' }],
+          source: 'DISCOVERED',
+        },
+      ],
+    });
+
+    expect(inferredSpec.endpoints.length).toBe(2);
+    expect(inferredSpec.title).toContain('localhost');
+
+    const report = await ApiExplainer.explain(inferredSpec);
+    expect(report.endpointCount).toBe(2);
+    expect(report.docFormat).toBe('Inferred Spec');
+    expect(report.resources['Users']).toBeDefined();
+    expect(report.resources['Users'][0].path).toBe('/users');
+  });
+});
+

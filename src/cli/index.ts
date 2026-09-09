@@ -209,13 +209,23 @@ export function createCli(): Command {
       const targetUrl = urlArg || envManager.getActiveEnvironment().baseUrl;
 
       const discovery = new OpenApiDiscovery();
-      const result = await discovery.discover(targetUrl);
-      if (!result) {
-        console.log(chalk.yellow(`No OpenAPI spec found at ${targetUrl} to explain.`));
+      const openApiResult = await discovery.discover(targetUrl);
+      let targetSpec = openApiResult?.spec || null;
+
+      if (!targetSpec) {
+        const prober = new SafeProber();
+        const probeResult = await prober.probe(targetUrl);
+        if (probeResult.isReachable) {
+          targetSpec = prober.createInferredSpec(probeResult);
+        }
+      }
+
+      if (!targetSpec) {
+        console.log(chalk.yellow(`Could not connect to target API at ${targetUrl}. Is the server running?`));
         return;
       }
 
-      const report = await ApiExplainer.explain(result.spec);
+      const report = await ApiExplainer.explain(targetSpec);
 
       console.log(boxen(
         `${chalk.bold('API ANALYSIS REPORT')}\n` +
@@ -370,14 +380,23 @@ export function createCli(): Command {
 
       const targetUrl = options.url || envManager.getActiveEnvironment().baseUrl;
       const discovery = new OpenApiDiscovery();
-      const result = await discovery.discover(targetUrl);
+      const openApiResult = await discovery.discover(targetUrl);
+      let targetSpec = openApiResult?.spec || null;
 
-      if (!result) {
-        console.log(chalk.yellow(`No OpenAPI spec found at ${targetUrl} to interpret natural language query.`));
+      if (!targetSpec) {
+        const prober = new SafeProber();
+        const probeResult = await prober.probe(targetUrl);
+        if (probeResult.isReachable) {
+          targetSpec = prober.createInferredSpec(probeResult);
+        }
+      }
+
+      if (!targetSpec) {
+        console.log(chalk.yellow(`Could not connect to target API at ${targetUrl}.`));
         return;
       }
 
-      const proposal = NlRequestBuilder.proposeRequest(query, result.spec);
+      const proposal = NlRequestBuilder.proposeRequest(query, targetSpec);
       if (!proposal) {
         console.log(chalk.red(`Could not map query "${query}" to an endpoint.`));
         return;
@@ -427,14 +446,23 @@ export function createCli(): Command {
       const targetUrl = urlArg || envManager.getActiveEnvironment().baseUrl;
 
       const discovery = new OpenApiDiscovery();
-      const result = await discovery.discover(targetUrl, options?.openapi);
+      const openApiResult = await discovery.discover(targetUrl, options?.openapi);
+      let targetSpec = openApiResult?.spec || null;
 
-      if (!result) {
-        console.log(chalk.yellow(`No OpenAPI spec found at ${targetUrl}. Run "apix connect" for probing.`));
+      if (!targetSpec) {
+        const prober = new SafeProber();
+        const probeResult = await prober.probe(targetUrl);
+        if (probeResult.isReachable) {
+          targetSpec = prober.createInferredSpec(probeResult);
+        }
+      }
+
+      if (!targetSpec) {
+        console.log(chalk.yellow(`Could not connect to target API at ${targetUrl}.`));
         return;
       }
 
-      console.log(chalk.bold(`\n${result.spec.title} (v${result.spec.version}) - ${result.spec.endpoints.length} Endpoints\n`));
+      console.log(chalk.bold(`\n${targetSpec.title} (${targetSpec.version}) - ${targetSpec.endpoints.length} Endpoints\n`));
 
       const table = new Table({
         head: [chalk.cyan('Method'), chalk.cyan('Path'), chalk.cyan('Tag'), chalk.cyan('Summary')],
@@ -777,13 +805,23 @@ export function createCli(): Command {
       const targetUrl = target || envManager.getActiveEnvironment().baseUrl;
 
       const discovery = new OpenApiDiscovery();
-      const result = await discovery.discover(targetUrl);
-      if (!result) {
-        console.log(chalk.yellow('No OpenAPI spec found to analyze.'));
+      const openApiResult = await discovery.discover(targetUrl);
+      let targetSpec = openApiResult?.spec || null;
+
+      if (!targetSpec) {
+        const prober = new SafeProber();
+        const probeResult = await prober.probe(targetUrl);
+        if (probeResult.isReachable) {
+          targetSpec = prober.createInferredSpec(probeResult);
+        }
+      }
+
+      if (!targetSpec) {
+        console.log(chalk.yellow(`Could not connect to target API at ${targetUrl}.`));
         return;
       }
 
-      const report = QualityAnalyzer.analyze(result.spec);
+      const report = QualityAnalyzer.analyze(targetSpec);
 
       console.log(boxen(
         `${chalk.bold('API QUALITY SCORE')}: ${report.score >= 80 ? chalk.green(`${report.score}/100`) : chalk.yellow(`${report.score}/100`)}\n\n` +
